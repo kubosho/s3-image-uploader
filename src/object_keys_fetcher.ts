@@ -1,4 +1,4 @@
-import { ListObjectsCommand, S3Client } from "@aws-sdk/client-s3";
+import { ListObjectsCommand, S3Client } from '@aws-sdk/client-s3';
 
 export async function fetchObjectKeys(client: S3Client) {
   const command = new ListObjectsCommand({

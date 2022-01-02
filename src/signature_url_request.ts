@@ -1,18 +1,15 @@
-import { S3RequestPresigner } from "@aws-sdk/s3-request-presigner";
-import { Hash } from "@aws-sdk/hash-node";
-import { HttpRequest } from "@aws-sdk/protocol-http";
-import { parseUrl } from "@aws-sdk/url-parser";
+import { S3RequestPresigner } from '@aws-sdk/s3-request-presigner';
+import { Hash } from '@aws-sdk/hash-node';
+import { HttpRequest } from '@aws-sdk/protocol-http';
+import { parseUrl } from '@aws-sdk/url-parser';
 
 type Params = {
   url: string;
   secondsToExpire?: number;
 };
 
-export async function requestSignatureUrl({
-  url,
-  secondsToExpire,
-}: Params): Promise<string> {
-  const hash = Hash.bind(null, "sha256");
+export async function requestSignatureUrl({ url, secondsToExpire }: Params): Promise<string> {
+  const hash = Hash.bind(null, 'sha256');
 
   const presigner = new S3RequestPresigner({
     credentials: {
@@ -24,10 +21,7 @@ export async function requestSignatureUrl({
   });
 
   const expiresIn = secondsToExpire ?? 600;
-  const { hostname, path, protocol, query } = await presigner.presign(
-    new HttpRequest(parseUrl(url)),
-    { expiresIn }
-  );
+  const { hostname, path, protocol, query } = await presigner.presign(new HttpRequest(parseUrl(url)), { expiresIn });
   const urlSearchParams = new URLSearchParams(query as Record<string, string>);
   const urlSearchParamString = urlSearchParams.toString();
 
