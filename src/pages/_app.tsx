@@ -1,6 +1,6 @@
 import './_app.css';
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps }): JSX.Element {
   return <Component {...pageProps} />;
 }
 
