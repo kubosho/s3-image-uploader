@@ -1,6 +1,6 @@
 import { ListObjectsCommand, S3Client } from '@aws-sdk/client-s3';
 
-export async function fetchObjectKeys(client: S3Client) {
+export async function fetchObjectKeys(client: S3Client): Promise<string[]> {
   const command = new ListObjectsCommand({
     Bucket: process.env.AWS_S3_BUCKET_NAME,
   });
