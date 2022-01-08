@@ -7,7 +7,8 @@ type Params = {
 };
 
 export async function getImageUrls({ secondsToExpire }: Params): Promise<string[]> {
-  require('dotenv').config();
+  const dotenv = await import('dotenv');
+  dotenv.config();
 
   const s3Client = createS3Client();
   const objectKeys = await fetchObjectKeys(s3Client);
