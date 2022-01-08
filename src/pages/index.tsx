@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Subscription } from 'rxjs';
 import { useInstance } from '../hooks/use_instance';
 import { ImageDetailModal } from '../components/ImageDetailModal';
-import { getImageUrls } from '../get_image_urls';
+import { getImageUrls } from '../shared_logic/get_image_urls';
 import { keyboardEventOnIndexPageObservable } from '../shared_logic/keyboard_shortcut/keyboard_event_observable';
 import { IndexPageShortcutKey } from '../shared_logic/keyboard_shortcut/shortcut_keys';
 
