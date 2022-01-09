@@ -4,9 +4,9 @@ import { useInstance } from '../hooks/use_instance';
 import { ImageDetailModal } from '../components/ImageDetailModal';
 import { keyboardEventOnIndexPageObservable } from '../shared_logic/keyboard_shortcut/keyboard_event_observable';
 import { IndexPageShortcutKey } from '../shared_logic/keyboard_shortcut/shortcut_keys';
-import { createS3Client } from '../shared_logic/s3/s3_client_creator';
-import { fetchObjectKeys } from '../shared_logic/object_keys_fetcher';
 import { createImageUrl } from '../shared_logic/image_url_creator';
+import { createS3Client } from '../shared_logic/s3/s3_client_creator';
+import { fetchObjectKeys } from '../shared_logic/s3/object_keys_fetcher';
 
 type Props = {
   imageUrls: string[];
