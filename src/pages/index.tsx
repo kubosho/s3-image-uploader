@@ -2,9 +2,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { Subscription } from 'rxjs';
 import { useInstance } from '../hooks/use_instance';
 import { ImageDetailModal } from '../components/ImageDetailModal';
-import { getImageUrls } from '../shared_logic/get_image_urls';
 import { keyboardEventOnIndexPageObservable } from '../shared_logic/keyboard_shortcut/keyboard_event_observable';
 import { IndexPageShortcutKey } from '../shared_logic/keyboard_shortcut/shortcut_keys';
+import { createS3Client } from '../shared_logic/s3/s3_client_creator';
+import { fetchObjectKeys } from '../shared_logic/object_keys_fetcher';
+import { createImageUrl } from '../shared_logic/image_url_creator';
 
 type Props = {
   imageUrls: string[];
@@ -54,7 +56,11 @@ function Index({ imageUrls }): JSX.Element {
 }
 
 export async function getStaticProps(): Promise<{ props: Props }> {
-  const imageUrls = await getImageUrls({ secondsToExpire: 600 });
+  const s3Client = createS3Client();
+  const objectKeys = await fetchObjectKeys(s3Client);
+  const imageUrls = await Promise.all(
+    objectKeys.map(async (key) => await createImageUrl({ imagePath: key, secondsToExpire: 600 })),
+  );
 
   return {
     props: {
