@@ -1,5 +1,5 @@
 import { createImageUrl } from './image_url_creator';
-import { createS3Client } from './s3_client_creator';
+import { createS3Client } from './s3/s3_client_creator';
 import { fetchObjectKeys } from './object_keys_fetcher';
 
 type Params = {
