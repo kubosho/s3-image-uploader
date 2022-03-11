@@ -50,7 +50,7 @@ function Index({ imageUrls }): JSX.Element {
           </button>
         ))}
       </div>
-      {isModalOpen && <ImageDetailModal name="" url={imageUrl} alt="" />}
+      <ImageDetailModal name="" url={imageUrl} alt="" open={isModalOpen} />
     </>
   );
 }

@@ -6,9 +6,10 @@ type Props = {
   name: string;
   url: string;
   alt?: string;
+  open: boolean;
 };
 
-export function ImageDetailModal({ name, url, alt }: Props): JSX.Element {
+export function ImageDetailModal({ name, url, alt, open }: Props): JSX.Element {
   const isClient = useIsClient();
 
   if (!isClient) {
@@ -16,10 +17,11 @@ export function ImageDetailModal({ name, url, alt }: Props): JSX.Element {
   }
 
   return createPortal(
-    <div
+    <dialog
       className={classNames('bg-slate-900 bg-opacity-80 fixed left-0 top-0 w-full h-full', {
         hidden: url === '',
       })}
+      open={open}
     >
       <img src={url} alt="" width={800} />
       <p>{name}</p>
@@ -31,7 +33,7 @@ export function ImageDetailModal({ name, url, alt }: Props): JSX.Element {
         <label htmlFor="embedded-code">貼り付け用コード</label>
         <input type="text" value={`![${alt}](${url})`} id="embedded-code" name="embedded-code" readOnly />
       </div>
-    </div>,
+    </dialog>,
     document.body,
   );
 }
