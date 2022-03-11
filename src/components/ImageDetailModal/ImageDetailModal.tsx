@@ -7,9 +7,10 @@ type Props = {
   url: string;
   alt?: string;
   open: boolean;
+  onClickCloseButton: () => void;
 };
 
-export function ImageDetailModal({ name, url, alt, open }: Props): JSX.Element {
+export function ImageDetailModal({ name, url, alt, open, onClickCloseButton }: Props): JSX.Element {
   const isClient = useIsClient();
 
   if (!isClient) {
@@ -46,6 +47,9 @@ export function ImageDetailModal({ name, url, alt, open }: Props): JSX.Element {
             readOnly
           />
       </div>
+        <button className="absolute top-0 right-0" type="button" onClick={onClickCloseButton}>
+          閉じる
+        </button>
       </div>
     </dialog>,
     document.body,

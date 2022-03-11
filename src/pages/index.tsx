@@ -32,6 +32,11 @@ function Index({ imageUrls }): JSX.Element {
     setIsModalOpen(true);
   }, []);
 
+  const onClickCloseButton = useCallback(() => {
+    setIsModalOpen(false);
+    setImageUrl('');
+  }, []);
+
   return (
     <>
       <div className="box-border columns-5">
@@ -45,7 +50,7 @@ function Index({ imageUrls }): JSX.Element {
           </button>
         ))}
       </div>
-      <ImageDetailModal name="" url={imageUrl} alt="" open={isModalOpen} />
+      <ImageDetailModal name="" url={imageUrl} alt="" open={isModalOpen} onClickCloseButton={onClickCloseButton} />
     </>
   );
 }
