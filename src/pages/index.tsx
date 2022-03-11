@@ -10,6 +10,8 @@ type Props = {
   imageUrls: string[];
 };
 
+const SECONDS_TO_EXPIRE = 600;
+
 function Index({ imageUrls }): JSX.Element {
   const [imageUrl, setImageUrl] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -60,7 +62,7 @@ export async function getStaticProps(): Promise<{ props: Props }> {
   const s3Client = createS3Client();
   const objectKeys = await fetchObjectKeys(s3Client);
   const imageUrls = await Promise.all(
-    objectKeys.map(async (key) => await createImageUrl({ imagePath: key, secondsToExpire: 600 })),
+    objectKeys.map(async (key) => await createImageUrl({ imagePath: key, secondsToExpire: SECONDS_TO_EXPIRE })),
   );
 
   return {
