@@ -1,18 +1,29 @@
 import classNames from 'classnames';
+import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useIsClient } from '../../hooks/use_is_client';
 
 type Props = {
   name: string;
   url: string;
-  alt?: string;
+  alt: string;
   open: boolean;
   onClickCloseButton: () => void;
 };
 
 export function ImageDetailModal({ name, url, alt, open, onClickCloseButton }: Props): JSX.Element {
-  const isClient = useIsClient();
+  const modifiedUrl = useRef('');
 
+  useEffect(() => {
+    if (url === '') {
+      return;
+    }
+
+    const u = new URL(url);
+    modifiedUrl.current = `${u.origin}${u.pathname}`;
+  }, [url]);
+
+  const isClient = useIsClient();
   if (!isClient) {
     return null;
   }
@@ -22,14 +33,14 @@ export function ImageDetailModal({ name, url, alt, open, onClickCloseButton }: P
       className={classNames(
         'bg-slate-900 bg-opacity-80 fixed flex flex-col items-center justify-center left-0 top-0 w-full h-full',
         {
-        hidden: url === '',
+          hidden: url === '',
         },
       )}
       open={open}
     >
       <div className="flex flex-col">
-      <img src={url} alt="" width={800} />
-      <p>{name}</p>
+        <img src={url} alt="" width={800} />
+        <p>{name}</p>
         <div className="w-full">
           <label className="text-white" htmlFor="alt-text">
             画像の代替テキスト
@@ -46,7 +57,7 @@ export function ImageDetailModal({ name, url, alt, open, onClickCloseButton }: P
             name="embedded-code"
             readOnly
           />
-      </div>
+        </div>
         <button className="absolute top-0 right-0" type="button" onClick={onClickCloseButton}>
           閉じる
         </button>
