@@ -27,7 +27,7 @@ function Index({ imageUrls }): JSX.Element {
     };
   }, [isModalOpen]);
 
-  const onClick = useCallback((url: string) => {
+  const onClickImage = useCallback((url: string) => {
     setImageUrl(url);
     setIsModalOpen(true);
   }, []);
@@ -44,7 +44,7 @@ function Index({ imageUrls }): JSX.Element {
           <button
             key={index}
             className="bg-slate-500 break-inside-avoid flex justify-center mb-6 p-1"
-            onClick={() => onClick(url)}
+            onClick={() => onClickImage(url)}
           >
             <img src={url} alt="" width="auto" height="300" />
           </button>
