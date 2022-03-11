@@ -19,6 +19,7 @@ function Index({ imageUrls }): JSX.Element {
     const subscription = obserevable.subscribe((key) => {
       if (isModalOpen && key === IndexPageShortcutKey.ModalExit) {
         setIsModalOpen(false);
+        setImageUrl('');
       }
     });
 
