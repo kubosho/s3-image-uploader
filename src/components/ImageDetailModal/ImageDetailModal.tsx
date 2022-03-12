@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { useEffect, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useIsClient } from '../../hooks/use_is_client';
 
@@ -12,7 +12,7 @@ type Props = {
 };
 
 export function ImageDetailModal({ name, url, alt, open, onClickCloseButton }: Props): JSX.Element {
-  const modifiedUrl = useRef('');
+  const [modifiedUrl, setModifiedUrl] = useState('');
 
   useEffect(() => {
     if (url === '') {
@@ -20,7 +20,7 @@ export function ImageDetailModal({ name, url, alt, open, onClickCloseButton }: P
     }
 
     const u = new URL(url);
-    modifiedUrl.current = `${u.origin}${u.pathname}`;
+    setModifiedUrl(`${u.origin}${u.pathname}`);
   }, [url]);
 
   const isClient = useIsClient();
@@ -52,7 +52,7 @@ export function ImageDetailModal({ name, url, alt, open, onClickCloseButton }: P
           <input
             className="w-full"
             type="text"
-            value={`![${alt}](${modifiedUrl.current})`}
+            value={`![${alt}](${modifiedUrl})`}
             id="embedded-code"
             name="embedded-code"
             readOnly
