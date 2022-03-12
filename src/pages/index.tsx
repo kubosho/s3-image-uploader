@@ -5,6 +5,7 @@ import { IndexPageShortcutKey } from '../shared_logic/keyboard_shortcut/shortcut
 import { createImageUrl } from '../shared_logic/s3/image_url_creator';
 import { createS3Client } from '../shared_logic/s3/s3_client_creator';
 import { fetchObjectKeys } from '../shared_logic/s3/object_keys_fetcher';
+import { Notification } from '../components/Notification';
 
 type Props = {
   imageUrls: string[];
@@ -15,6 +16,17 @@ const SECONDS_TO_EXPIRE = 600;
 function Index({ imageUrls }): JSX.Element {
   const [imageUrl, setImageUrl] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isNotificationShown, setIsNotificationShown] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsNotificationShown(true);
+    }, SECONDS_TO_EXPIRE * 1000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
 
   useEffect(() => {
     const obserevable = keyboardEventOnIndexPageObservable();
@@ -35,9 +47,15 @@ function Index({ imageUrls }): JSX.Element {
     setIsModalOpen(true);
   }, []);
 
-  const onClickCloseButton = useCallback(() => {
+  const onClickModalCloseButton = useCallback(() => {
     setIsModalOpen(false);
     setImageUrl('');
+  }, []);
+
+  const onClickNotificationCloseButton = useCallback(() => {
+    setIsModalOpen(false);
+    setImageUrl('');
+    location.reload();
   }, []);
 
   return (
@@ -53,7 +71,15 @@ function Index({ imageUrls }): JSX.Element {
           </button>
         ))}
       </div>
-      <ImageDetailModal name="" url={imageUrl} alt="" open={isModalOpen} onClickCloseButton={onClickCloseButton} />
+      <ImageDetailModal name="" url={imageUrl} alt="" open={isModalOpen} onClickCloseButton={onClickModalCloseButton} />
+      <div className="absolute right-2 top-2">
+        <Notification
+          isShown={isNotificationShown}
+          text="Required reload."
+          buttonText="OK"
+          onClickCloseButton={onClickNotificationCloseButton}
+        />
+      </div>
     </>
   );
 }
