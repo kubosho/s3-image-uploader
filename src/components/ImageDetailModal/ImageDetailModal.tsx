@@ -41,12 +41,12 @@ export function ImageDetailModal({ name, url, alt, open, onClickCloseButton }: P
       <div className="flex flex-col">
         <img src={url} alt="" width={800} />
         <p>{name}</p>
-        <div className="w-full">
+        <div className="w-full mt-2">
           <label className="text-white" htmlFor="alt-text">
             画像の代替テキスト
           </label>
           <textarea className="w-full" id="alt-text" name="alt-text" defaultValue={alt} />
-          <label className="text-white" htmlFor="embedded-code">
+          <label className="pt-2 text-white" htmlFor="embedded-code">
             貼り付け用コード
           </label>
           <input
@@ -58,7 +58,7 @@ export function ImageDetailModal({ name, url, alt, open, onClickCloseButton }: P
             readOnly
           />
         </div>
-        <button className="absolute top-0 right-0" type="button" onClick={onClickCloseButton}>
+        <button className="absolute top-2 right-2" type="button" onClick={onClickCloseButton}>
           閉じる
         </button>
       </div>
