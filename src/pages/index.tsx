@@ -6,6 +6,7 @@ import { createImageUrl } from '../shared_logic/s3/image_url_creator';
 import { createS3Client } from '../shared_logic/s3/s3_client_creator';
 import { fetchObjectKeys } from '../shared_logic/s3/object_keys_fetcher';
 import { Notification } from '../components/Notification';
+import { SiteHeader } from '../components/SiteHeader';
 
 type Props = {
   imageUrls: string[];
@@ -60,11 +61,12 @@ function Index({ imageUrls }): JSX.Element {
 
   return (
     <>
-      <div className="box-border columns-5">
+      <SiteHeader siteTitle="S3 image uploader" />
+      <div className="box-border columns-5 mt-4">
         {imageUrls.map((url, index) => (
           <button
             key={index}
-            className="bg-slate-500 break-inside-avoid flex justify-center mb-6 p-1"
+            className="bg-slate-500 break-inside-avoid flex justify-center mb-4 p-1"
             onClick={() => onClickImage(url)}
           >
             <img src={url} alt="" width="auto" height="300" />
@@ -72,7 +74,7 @@ function Index({ imageUrls }): JSX.Element {
         ))}
       </div>
       <ImageDetailModal name="" url={imageUrl} alt="" open={isModalOpen} onClickCloseButton={onClickModalCloseButton} />
-      <div className="absolute right-2 top-2">
+      <div className="absolute right-2 bottom-2">
         <Notification
           isShown={isNotificationShown}
           text="Required reload."
