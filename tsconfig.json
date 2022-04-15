@@ -20,7 +20,7 @@
     "incremental": true
   },
   "exclude": [
-    "jest.config.ts",
+    "jest.config.js",
     "node_modules"
   ],
   "include": [
