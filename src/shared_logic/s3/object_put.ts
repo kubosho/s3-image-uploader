@@ -1,11 +1,13 @@
 import { basename } from 'path';
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { PutObjectCommand, PutObjectCommandOutput, S3Client } from '@aws-sdk/client-s3';
 
-export async function putObject(
-  client: S3Client,
-  filename: string,
-  body: string | ReadableStream<unknown> | Blob | Uint8Array | Buffer,
-): Promise<unknown> {
+type Params = {
+  client: S3Client;
+  filename: string;
+  body: Uint8Array;
+};
+
+export async function putObject({ client, filename, body }: Params): Promise<PutObjectCommandOutput> {
   const command = new PutObjectCommand({
     Bucket: process.env.AWS_S3_BUCKET_NAME,
     Key: basename(filename),
