@@ -10,6 +10,7 @@ import { SiteHeader } from '../components/SiteHeader';
 import { putObject } from '../shared_logic/s3/object_put';
 import { convertImageFileToUint8Array } from '../shared_logic/convert_image_file_to_uint8array';
 import { UploadButton } from '../components/UploadButton';
+import { ImageList } from '../components/ImageList';
 
 type Props = {
   imageUrls: string[];
@@ -97,15 +98,7 @@ function Index({ imageUrls: initialImageUrls }): JSX.Element {
       <SiteHeader siteTitle="S3 image uploader" />
       <UploadButton onChange={onChangeImageUpload} />
       <div className="box-border columns-5 mt-4">
-        {imageUrls.map((url, index) => (
-          <button
-            key={index}
-            className="bg-slate-500 break-inside-avoid flex justify-center mb-4 p-1"
-            onClick={() => onClickImage(url)}
-          >
-            <img src={url} alt="" width="auto" height="300" />
-          </button>
-        ))}
+        <ImageList imageUrls={imageUrls} onClick={onClickImage} />
       </div>
       <ImageDetail name="" url={imageUrl} alt="" open={isModalOpen} onClickCloseButton={onClickModalCloseButton} />
       <div className="absolute right-2 bottom-2">
