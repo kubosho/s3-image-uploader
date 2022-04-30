@@ -11,7 +11,7 @@ type Props = {
   onClickCloseButton: () => void;
 };
 
-export function ImageDetailModal({ name, url, alt, open, onClickCloseButton }: Props): JSX.Element {
+export function ImageDetail({ name, url, alt, open, onClickCloseButton }: Props): JSX.Element {
   const [modifiedUrl, setModifiedUrl] = useState('');
 
   useEffect(() => {

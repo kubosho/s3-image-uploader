@@ -1,5 +1,5 @@
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
-import { ImageDetailModal } from '../components/ImageDetailModal';
+import { ImageDetail } from '../components/ImageDetail';
 import { keyboardEventOnIndexPageObservable } from '../shared_logic/keyboard_shortcut/keyboard_event_observable';
 import { IndexPageShortcutKey } from '../shared_logic/keyboard_shortcut/shortcut_keys';
 import { createImageUrl } from '../shared_logic/s3/image_url_creator';
@@ -122,7 +122,7 @@ function Index({ imageUrls: initialImageUrls }): JSX.Element {
           </button>
         ))}
       </div>
-      <ImageDetailModal name="" url={imageUrl} alt="" open={isModalOpen} onClickCloseButton={onClickModalCloseButton} />
+      <ImageDetail name="" url={imageUrl} alt="" open={isModalOpen} onClickCloseButton={onClickModalCloseButton} />
       <div className="absolute right-2 bottom-2">
         <Notification
           isShown={isNotificationShown}
