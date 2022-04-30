@@ -1,14 +1,16 @@
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
-import { ImageDetailModal } from '../components/ImageDetailModal';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { ImageDetail } from '../components/ImageDetail';
 import { keyboardEventOnIndexPageObservable } from '../shared_logic/keyboard_shortcut/keyboard_event_observable';
 import { IndexPageShortcutKey } from '../shared_logic/keyboard_shortcut/shortcut_keys';
 import { createImageUrl } from '../shared_logic/s3/image_url_creator';
 import { createS3Client } from '../shared_logic/s3/s3_client_creator';
-import { fetchObjectKeys } from '../shared_logic/s3/object_keys_fetcher';
+import { fetchImageUrlList } from '../shared_logic/s3/image_url_fetcher';
 import { Notification } from '../components/Notification';
 import { SiteHeader } from '../components/SiteHeader';
 import { putObject } from '../shared_logic/s3/object_put';
 import { convertImageFileToUint8Array } from '../shared_logic/convert_image_file_to_uint8array';
+import { UploadButton } from '../components/UploadButton';
+import { ImageList } from '../components/ImageList';
 
 type Props = {
   imageUrls: string[];
@@ -18,17 +20,11 @@ const SECONDS_TO_EXPIRE = 600;
 const S3_CLIENT = createS3Client();
 
 function Index({ imageUrls: initialImageUrls }): JSX.Element {
-  const inputFileRef = useRef<HTMLInputElement>(null);
-
   const [imageUrls, setImageUrls] = useState(initialImageUrls);
   const [imageUrl, setImageUrl] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isNotificationShown, setIsNotificationShown] = useState(false);
   const [fileListIterator, setFileListIterator] = useState<IterableIterator<File> | null>(null);
-
-  const onClickImageUpload = useCallback(() => {
-    inputFileRef.current.click();
-  }, []);
 
   const onChangeImageUpload = useCallback((event: ChangeEvent) => {
     const { target } = event;
@@ -100,29 +96,11 @@ function Index({ imageUrls: initialImageUrls }): JSX.Element {
   return (
     <>
       <SiteHeader siteTitle="S3 image uploader" />
-      <button type="button" className="absolute top-0 right-0" onClick={onClickImageUpload}>
-        Upload image
-      </button>
-      <input
-        className="hidden"
-        ref={inputFileRef}
-        type="file"
-        accept="image/*"
-        onChange={onChangeImageUpload}
-        multiple
-      />
+      <UploadButton onChange={onChangeImageUpload} />
       <div className="box-border columns-5 mt-4">
-        {imageUrls.map((url, index) => (
-          <button
-            key={index}
-            className="bg-slate-500 break-inside-avoid flex justify-center mb-4 p-1"
-            onClick={() => onClickImage(url)}
-          >
-            <img src={url} alt="" width="auto" height="300" />
-          </button>
-        ))}
+        <ImageList imageUrls={imageUrls} onClick={onClickImage} />
       </div>
-      <ImageDetailModal name="" url={imageUrl} alt="" open={isModalOpen} onClickCloseButton={onClickModalCloseButton} />
+      <ImageDetail name="" url={imageUrl} alt="" open={isModalOpen} onClickCloseButton={onClickModalCloseButton} />
       <div className="absolute right-2 bottom-2">
         <Notification
           isShown={isNotificationShown}
@@ -136,10 +114,7 @@ function Index({ imageUrls: initialImageUrls }): JSX.Element {
 }
 
 export async function getStaticProps(): Promise<{ props: Props }> {
-  const objectKeys = await fetchObjectKeys(S3_CLIENT);
-  const imageUrls = await Promise.all(
-    objectKeys.map(async (key) => await createImageUrl({ imagePath: key, secondsToExpire: SECONDS_TO_EXPIRE })),
-  );
+  const imageUrls = await fetchImageUrlList(S3_CLIENT, SECONDS_TO_EXPIRE);
 
   return {
     props: {
