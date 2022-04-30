@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { ImageDetail } from '../components/ImageDetail';
 import { keyboardEventOnIndexPageObservable } from '../shared_logic/keyboard_shortcut/keyboard_event_observable';
 import { IndexPageShortcutKey } from '../shared_logic/keyboard_shortcut/shortcut_keys';
@@ -9,6 +9,7 @@ import { Notification } from '../components/Notification';
 import { SiteHeader } from '../components/SiteHeader';
 import { putObject } from '../shared_logic/s3/object_put';
 import { convertImageFileToUint8Array } from '../shared_logic/convert_image_file_to_uint8array';
+import { UploadButton } from '../components/UploadButton';
 
 type Props = {
   imageUrls: string[];
@@ -18,17 +19,11 @@ const SECONDS_TO_EXPIRE = 600;
 const S3_CLIENT = createS3Client();
 
 function Index({ imageUrls: initialImageUrls }): JSX.Element {
-  const inputFileRef = useRef<HTMLInputElement>(null);
-
   const [imageUrls, setImageUrls] = useState(initialImageUrls);
   const [imageUrl, setImageUrl] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isNotificationShown, setIsNotificationShown] = useState(false);
   const [fileListIterator, setFileListIterator] = useState<IterableIterator<File> | null>(null);
-
-  const onClickImageUpload = useCallback(() => {
-    inputFileRef.current.click();
-  }, []);
 
   const onChangeImageUpload = useCallback((event: ChangeEvent) => {
     const { target } = event;
@@ -100,17 +95,7 @@ function Index({ imageUrls: initialImageUrls }): JSX.Element {
   return (
     <>
       <SiteHeader siteTitle="S3 image uploader" />
-      <button type="button" className="absolute top-0 right-0" onClick={onClickImageUpload}>
-        Upload image
-      </button>
-      <input
-        className="hidden"
-        ref={inputFileRef}
-        type="file"
-        accept="image/*"
-        onChange={onChangeImageUpload}
-        multiple
-      />
+      <UploadButton onChange={onChangeImageUpload} />
       <div className="box-border columns-5 mt-4">
         {imageUrls.map((url, index) => (
           <button
