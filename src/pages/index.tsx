@@ -4,7 +4,7 @@ import { keyboardEventOnIndexPageObservable } from '../shared_logic/keyboard_sho
 import { IndexPageShortcutKey } from '../shared_logic/keyboard_shortcut/shortcut_keys';
 import { createImageUrl } from '../shared_logic/s3/image_url_creator';
 import { createS3Client } from '../shared_logic/s3/s3_client_creator';
-import { fetchObjectKeys } from '../shared_logic/s3/object_keys_fetcher';
+import { fetchImageUrlList } from '../shared_logic/s3/image_url_fetcher';
 import { Notification } from '../components/Notification';
 import { SiteHeader } from '../components/SiteHeader';
 import { putObject } from '../shared_logic/s3/object_put';
@@ -114,10 +114,7 @@ function Index({ imageUrls: initialImageUrls }): JSX.Element {
 }
 
 export async function getStaticProps(): Promise<{ props: Props }> {
-  const objectKeys = await fetchObjectKeys(S3_CLIENT);
-  const imageUrls = await Promise.all(
-    objectKeys.map(async (key) => await createImageUrl({ imagePath: key, secondsToExpire: SECONDS_TO_EXPIRE })),
-  );
+  const imageUrls = await fetchImageUrlList(S3_CLIENT, SECONDS_TO_EXPIRE);
 
   return {
     props: {
