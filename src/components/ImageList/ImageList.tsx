@@ -16,16 +16,14 @@ export function ImageList({ imageUrls, onClick }: Props): JSX.Element {
   );
 
   return (
-    <>
+    <ul className="box-border columns-5 mt-4">
       {imageUrls.map((url, index) => (
-        <button
-          key={index}
-          className="bg-slate-500 break-inside-avoid flex justify-center mb-4 p-1"
-          onClick={() => onClickImage(url)}
-        >
-          <img src={url} alt="" width="auto" height="300" />
-        </button>
+        <li key={index} className="bg-slate-500 break-inside-avoid flex justify-center mb-4 p-1">
+          <button onClick={() => onClickImage(url)}>
+            <img src={url} alt="" width="auto" height="300" />
+          </button>
+        </li>
       ))}
-    </>
+    </ul>
   );
 }
