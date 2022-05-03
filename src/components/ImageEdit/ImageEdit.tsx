@@ -10,7 +10,7 @@ type Props = {
   alt: string;
 };
 
-export function ImageDetail({ name, url, alt }: Props): JSX.Element {
+export function ImageEdit({ name, url, alt }: Props): JSX.Element {
   const [isAltTextEditMode, setIsAltTextEditMode] = useState(false);
   const modifiedUrl = useMemo(() => convertCdnUrl(url), [url]);
 
@@ -28,22 +28,19 @@ export function ImageDetail({ name, url, alt }: Props): JSX.Element {
   }
 
   return (
-    <div className="flex">
-      <h2>{name}</h2>
-      <ul className="flex justify-center">
-        <li>
-          {isAltTextEditMode ? (
-            <AltTextEdit onClickSubmit={onSubmitAltTextEdit} />
-          ) : (
-            <button type="button" onClick={onClickAltTextEditButton}>
-              Alt
-            </button>
-          )}
-        </li>
-        <li>
-          <CopyToClipboardButton text={alt} url={modifiedUrl} />
-        </li>
-      </ul>
-    </div>
+    <ul className="flex justify-center">
+      <li>
+        {isAltTextEditMode ? (
+          <AltTextEdit onClickSubmit={onSubmitAltTextEdit} />
+        ) : (
+          <button type="button" onClick={onClickAltTextEditButton}>
+            Alt
+          </button>
+        )}
+      </li>
+      <li>
+        <CopyToClipboardButton text={alt} url={modifiedUrl} />
+      </li>
+    </ul>
   );
 }
