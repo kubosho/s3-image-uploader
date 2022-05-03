@@ -18,10 +18,14 @@ export function ImageList({ imageUrls }: Props): JSX.Element {
   return (
     <ul className="box-border columns-5 mt-4">
       {imageData.map(({ name, url }, index) => (
-        <li key={index} className="bg-slate-500 break-inside-avoid mb-4 p-1">
-          <p>{name}</p>
-          <img src={url} alt="" width="auto" height="300" />
-          <ImageEdit name={name} url={url} alt="" />
+        <li key={index} className="break-inside-avoid grid grid-flow-row">
+          <div className="relative">
+            <p className="row-start-2">{name}</p>
+            <img className="row-start-1" src={url} alt="" width="auto" height="300" />
+            <div className="row-start-3 absolute top-0 right-0 z-10">
+              <ImageEdit name={name} url={url} alt="" />
+            </div>
+          </div>
         </li>
       ))}
     </ul>
