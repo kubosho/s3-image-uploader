@@ -27,7 +27,7 @@ export const UploadButton = ({ onClick, onChange }: Props): JSX.Element => {
 
   return (
     <>
-      <button type="button" className="absolute top-0 right-0" onClick={onClickImageUpload}>
+      <button type="button" onClick={onClickImageUpload}>
         Upload image
       </button>
       <input

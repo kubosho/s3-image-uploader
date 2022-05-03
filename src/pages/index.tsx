@@ -105,7 +105,9 @@ function Index({ imageUrls: initialImageUrls, isError, errorReason }): JSX.Eleme
   return (
     <>
       <SiteHeader siteTitle="S3 image uploader" />
-      <UploadButton onChange={onChangeImageUpload} />
+      <div className="absolute top-0 right-0">
+        <UploadButton onChange={onChangeImageUpload} />
+      </div>
       <ImageList imageUrls={imageUrls} onClick={onClickImage} />
       <ImageDetail name="" url={imageUrl} alt="" open={isModalOpen} onClickCloseButton={onClickModalCloseButton} />
       <div className="absolute right-2 bottom-2">
