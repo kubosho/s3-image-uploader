@@ -1,8 +1,5 @@
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { ErrorReason, ERROR_REASON } from '../constants/error_reason';
-import { ImageDetail } from '../components/ImageDetail';
-import { keyboardEventOnIndexPageObservable } from '../shared_logic/keyboard_shortcut/keyboard_event_observable';
-import { IndexPageShortcutKey } from '../shared_logic/keyboard_shortcut/shortcut_keys';
 import { createImageUrl } from '../shared_logic/s3/image_url_creator';
 import { createS3Client } from '../shared_logic/s3/s3_client_creator';
 import { fetchImageUrlList } from '../shared_logic/s3/image_url_fetcher';
@@ -26,8 +23,6 @@ const S3_CLIENT = createS3Client();
 
 function Index({ imageUrls: initialImageUrls, isError, errorReason }): JSX.Element {
   const [imageUrls, setImageUrls] = useState(initialImageUrls);
-  const [imageUrl, setImageUrl] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isNotificationShown, setIsNotificationShown] = useState(false);
   const [fileListIterator, setFileListIterator] = useState<IterableIterator<File> | null>(null);
 
@@ -41,19 +36,7 @@ function Index({ imageUrls: initialImageUrls, isError, errorReason }): JSX.Eleme
     }
   }, []);
 
-  const onClickImage = useCallback((url: string) => {
-    setImageUrl(url);
-    setIsModalOpen(true);
-  }, []);
-
-  const onClickModalCloseButton = useCallback(() => {
-    setIsModalOpen(false);
-    setImageUrl('');
-  }, []);
-
   const onClickNotificationCloseButton = useCallback(() => {
-    setIsModalOpen(false);
-    setImageUrl('');
     location.reload();
   }, []);
 
@@ -84,20 +67,6 @@ function Index({ imageUrls: initialImageUrls, isError, errorReason }): JSX.Eleme
     })();
   }, [fileListIterator, imageUrls]);
 
-  useEffect(() => {
-    const obserevable = keyboardEventOnIndexPageObservable();
-    const subscription = obserevable.subscribe((key) => {
-      if (isModalOpen && key === IndexPageShortcutKey.ModalExit) {
-        setIsModalOpen(false);
-        setImageUrl('');
-      }
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [isModalOpen]);
-
   if (isError) {
     return <Error errorReason={errorReason} />;
   }
@@ -108,8 +77,7 @@ function Index({ imageUrls: initialImageUrls, isError, errorReason }): JSX.Eleme
       <div className="absolute top-0 right-0">
         <UploadButton onChange={onChangeImageUpload} />
       </div>
-      <ImageList imageUrls={imageUrls} onClick={onClickImage} />
-      <ImageDetail name="" url={imageUrl} alt="" open={isModalOpen} onClickCloseButton={onClickModalCloseButton} />
+      <ImageList imageUrls={imageUrls} />
       <div className="absolute right-2 bottom-2">
         <Notification
           isShown={isNotificationShown}

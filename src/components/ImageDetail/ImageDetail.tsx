@@ -1,68 +1,32 @@
-import classNames from 'classnames';
-import { useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
+import { useMemo } from 'react';
 import { useIsClient } from '../../hooks/use_is_client';
+import { convertCdnUrl } from '../../shared_logic/cdn_url_converter';
+import { CopyToClipboardButton } from '../CopyToClipboardButton';
 
 type Props = {
   name: string;
   url: string;
   alt: string;
-  open: boolean;
-  onClickCloseButton: () => void;
 };
 
-export function ImageDetail({ name, url, alt, open, onClickCloseButton }: Props): JSX.Element {
-  const [modifiedUrl, setModifiedUrl] = useState('');
-
-  useEffect(() => {
-    if (url === '') {
-      return;
-    }
-
-    const u = new URL(url);
-    setModifiedUrl(`${u.origin}${u.pathname}`);
-  }, [url]);
+export function ImageDetail({ name, url, alt }: Props): JSX.Element {
+  const modifiedUrl = useMemo(() => convertCdnUrl(url), [url]);
 
   const isClient = useIsClient();
   if (!isClient) {
     return null;
   }
 
-  return createPortal(
-    <dialog
-      className={classNames(
-        'bg-slate-900 bg-opacity-80 fixed flex flex-col items-center justify-center left-0 top-0 w-full h-full',
-        {
-          hidden: url === '',
-        },
-      )}
-      open={open}
-    >
-      <div className="flex flex-col">
-        <img src={url} alt="" width={800} />
-        <p>{name}</p>
-        <div className="w-full mt-2">
-          <label className="text-white" htmlFor="alt-text">
-            画像の代替テキスト
-          </label>
-          <textarea className="w-full" id="alt-text" name="alt-text" defaultValue={alt} />
-          <label className="pt-2 text-white" htmlFor="embedded-code">
-            貼り付け用コード
-          </label>
-          <input
-            className="w-full"
-            type="text"
-            value={`![${alt}](${modifiedUrl})`}
-            id="embedded-code"
-            name="embedded-code"
-            readOnly
-          />
-        </div>
-        <button className="absolute top-2 right-2" type="button" onClick={onClickCloseButton}>
-          閉じる
-        </button>
+  return (
+    <div className="bg-slate-900 bg-opacity-80 flex flex-col">
+      <h2>{name}</h2>
+      <div className="w-full mt-2">
+        <label className="text-white" htmlFor="alt-text">
+          Alt
+        </label>
+        <textarea className="w-full" id="alt-text" name="alt-text" defaultValue={alt} />
+        <CopyToClipboardButton text={alt} url={modifiedUrl} />
       </div>
-    </dialog>,
-    document.body,
+    </div>
   );
 }
