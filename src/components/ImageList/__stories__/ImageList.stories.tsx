@@ -6,10 +6,6 @@ export default {
   component: ImageList,
 } as ComponentMeta<typeof ImageList>;
 
-function noop(): void {
-  return;
-}
-
 const Template: ComponentStory<typeof ImageList> = (args) => <ImageList {...args} />;
 
 export const ImageListWithOpen = Template.bind({});
@@ -22,5 +18,4 @@ ImageListWithOpen.args = {
     'https://placekitten.com/300/500',
     'https://placekitten.com/300/400',
   ],
-  onClick: noop,
 };

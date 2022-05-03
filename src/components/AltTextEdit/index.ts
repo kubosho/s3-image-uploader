@@ -1,0 +1,1 @@
+export { AltTextEdit } from './AltTextEdit';

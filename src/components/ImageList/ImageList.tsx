@@ -1,27 +1,31 @@
-import { useCallback } from 'react';
+import { ImageEdit } from '../ImageEdit';
 
 type Props = {
   imageUrls: string[];
-  onClick?: (imageUrl: string) => void;
 };
 
-export function ImageList({ imageUrls, onClick }: Props): JSX.Element {
-  const onClickImage = useCallback(
-    (imageUrl: string) => {
-      if (onClick !== undefined) {
-        onClick(imageUrl);
-      }
-    },
-    [onClick],
-  );
+export function ImageList({ imageUrls }: Props): JSX.Element {
+  const imageData = imageUrls.map((url) => {
+    const u = new URL(url);
+    const name = u.pathname.slice(1);
+
+    return {
+      name,
+      url,
+    };
+  });
 
   return (
     <ul className="box-border columns-5 mt-4">
-      {imageUrls.map((url, index) => (
-        <li key={index} className="bg-slate-500 break-inside-avoid flex justify-center mb-4 p-1">
-          <button onClick={() => onClickImage(url)}>
-            <img src={url} alt="" width="auto" height="300" />
-          </button>
+      {imageData.map(({ name, url }, index) => (
+        <li key={index} className="break-inside-avoid grid grid-flow-row">
+          <div className="relative">
+            <p className="row-start-2">{name}</p>
+            <img className="row-start-1" src={url} alt="" width="auto" height="300" />
+            <div className="row-start-3 absolute top-0 right-0 z-10">
+              <ImageEdit name={name} url={url} alt="" />
+            </div>
+          </div>
         </li>
       ))}
     </ul>
