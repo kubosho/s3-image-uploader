@@ -1,6 +1,7 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useIsClient } from '../../hooks/use_is_client';
 import { convertCdnUrl } from '../../shared_logic/cdn_url_converter';
+import { AltTextEdit } from '../AltTextEdit';
 import { CopyToClipboardButton } from '../CopyToClipboardButton';
 
 type Props = {
@@ -10,7 +11,16 @@ type Props = {
 };
 
 export function ImageDetail({ name, url, alt }: Props): JSX.Element {
+  const [isAltTextEditMode, setIsAltTextEditMode] = useState(false);
   const modifiedUrl = useMemo(() => convertCdnUrl(url), [url]);
+
+  const onClickAltTextEditButton = useCallback(() => {
+    setIsAltTextEditMode(true);
+  }, []);
+
+  const onSubmitAltTextEdit = useCallback(() => {
+    setIsAltTextEditMode(false);
+  }, []);
 
   const isClient = useIsClient();
   if (!isClient) {
@@ -18,15 +28,22 @@ export function ImageDetail({ name, url, alt }: Props): JSX.Element {
   }
 
   return (
-    <div className="bg-slate-900 bg-opacity-80 flex flex-col">
+    <div className="flex">
       <h2>{name}</h2>
-      <div className="w-full mt-2">
-        <label className="text-white" htmlFor="alt-text">
-          Alt
-        </label>
-        <textarea className="w-full" id="alt-text" name="alt-text" defaultValue={alt} />
-        <CopyToClipboardButton text={alt} url={modifiedUrl} />
-      </div>
+      <ul className="flex justify-center">
+        <li>
+          {isAltTextEditMode ? (
+            <AltTextEdit onClickSubmit={onSubmitAltTextEdit} />
+          ) : (
+            <button type="button" onClick={onClickAltTextEditButton}>
+              Alt
+            </button>
+          )}
+        </li>
+        <li>
+          <CopyToClipboardButton text={alt} url={modifiedUrl} />
+        </li>
+      </ul>
     </div>
   );
 }
