@@ -10,7 +10,7 @@ export function ImageList({ imageUrls }: Props): JSX.Element {
     const name = u.pathname.slice(1);
 
     return {
-      name,
+      name: decodeURI(name),
       url,
     };
   });
