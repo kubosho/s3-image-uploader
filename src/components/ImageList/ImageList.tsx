@@ -23,7 +23,7 @@ export function ImageList({ imageUrls }: Props): JSX.Element {
             <p className="row-start-2">{name}</p>
             <img className="row-start-1" src={url} alt="" width="auto" height="300" />
             <div className="row-start-3 absolute top-0 right-0 z-10">
-              <ImageEdit name={name} url={url} alt="" />
+              <ImageEdit url={url} alt="" />
             </div>
           </div>
         </li>

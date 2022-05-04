@@ -5,12 +5,11 @@ import { AltTextEdit } from '../AltTextEdit';
 import { CopyToClipboardButton } from '../CopyToClipboardButton';
 
 type Props = {
-  name: string;
   url: string;
   alt: string;
 };
 
-export function ImageEdit({ name, url, alt }: Props): JSX.Element {
+export function ImageEdit({ url, alt }: Props): JSX.Element {
   const [isAltTextEditMode, setIsAltTextEditMode] = useState(false);
   const modifiedUrl = useMemo(() => convertCdnUrl(url), [url]);
 
