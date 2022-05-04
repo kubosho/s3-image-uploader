@@ -33,7 +33,7 @@ export function ImageEdit({ url, alt }: Props): JSX.Element {
         setImageList(imageList.filter((image) => image !== url));
       })();
     }
-  }, []);
+  }, [imageList, setImageList]);
 
   const onSubmitAltTextEdit = useCallback(() => {
     setIsAltTextEditMode(false);

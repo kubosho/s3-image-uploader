@@ -53,7 +53,7 @@ function Index({ imageUrlList: initialImageUrls, isError, errorReason }): JSX.El
 
   useEffect(() => {
     setImageList(initialImageUrls);
-  }, [initialImageUrls]);
+  }, [initialImageUrls, setImageList]);
 
   useEffect(() => {
     (async () => {
@@ -70,7 +70,7 @@ function Index({ imageUrlList: initialImageUrls, isError, errorReason }): JSX.El
         setImageList((prevState) => [...prevState, imageUrl]);
       }
     })();
-  }, [fileListIterator, imageList]);
+  }, [fileListIterator, imageList, setImageList]);
 
   if (isError) {
     return <Error errorReason={errorReason} />;
