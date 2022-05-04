@@ -1,12 +1,12 @@
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { ErrorReason, ERROR_REASON } from '../constants/error_reason';
 import { createImageUrl } from '../shared_logic/s3/image_url_creator';
-import { createS3Client } from '../shared_logic/s3/s3_client_creator';
 import { fetchImageUrlList } from '../shared_logic/s3/image_url_fetcher';
 import { Notification } from '../components/Notification';
 import { SiteHeader } from '../components/SiteHeader';
 import { convertImageFileToUint8Array } from '../shared_logic/convert_image_file_to_uint8array';
 import { hasAwsEnv } from '../shared_logic/has_aws_env';
+import { s3ClientInstance } from '../shared_logic/s3/s3_client_creator';
 import { putObject } from '../shared_logic/s3/object_put';
 import { UploadButton } from '../components/UploadButton';
 import { ImageList } from '../components/ImageList';
@@ -19,7 +19,6 @@ type Props = {
 };
 
 const SECONDS_TO_EXPIRE = 600;
-const S3_CLIENT = createS3Client();
 
 function Index({ imageUrls: initialImageUrls, isError, errorReason }): JSX.Element {
   const [imageUrls, setImageUrls] = useState(initialImageUrls);
@@ -59,7 +58,7 @@ function Index({ imageUrls: initialImageUrls, isError, errorReason }): JSX.Eleme
       for (const file of fileListIterator) {
         const filename = file.name;
         const body = await convertImageFileToUint8Array(file);
-        await putObject({ client: S3_CLIENT, filename, body });
+        await putObject({ client: s3ClientInstance(), filename, body });
 
         const imageUrl = await createImageUrl({ imagePath: filename, secondsToExpire: SECONDS_TO_EXPIRE });
         setImageUrls((prevState) => [...prevState, imageUrl]);
@@ -101,7 +100,7 @@ export async function getStaticProps(): Promise<{ props: Props }> {
     };
   }
 
-  const imageUrls = await fetchImageUrlList(S3_CLIENT, SECONDS_TO_EXPIRE);
+  const imageUrls = await fetchImageUrlList(s3ClientInstance(), SECONDS_TO_EXPIRE);
 
   return {
     props: {
