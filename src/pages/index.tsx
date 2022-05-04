@@ -1,4 +1,5 @@
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { useAtom } from 'jotai';
 import { ErrorReason, ERROR_REASON } from '../constants/error_reason';
 import { createImageUrl } from '../shared_logic/s3/image_url_creator';
 import { fetchImageUrlList } from '../shared_logic/s3/image_url_fetcher';
@@ -11,17 +12,18 @@ import { putObject } from '../shared_logic/s3/object_put';
 import { UploadButton } from '../components/UploadButton';
 import { ImageList } from '../components/ImageList';
 import { Error } from '../components/Error';
+import { imageListAtom } from '../stores/image_list';
 
 type Props = {
-  imageUrls: string[];
+  imageUrlList: string[];
   isError?: boolean;
   errorReason?: ErrorReason;
 };
 
 const SECONDS_TO_EXPIRE = 600;
 
-function Index({ imageUrls: initialImageUrls, isError, errorReason }): JSX.Element {
-  const [imageUrls, setImageUrls] = useState(initialImageUrls);
+function Index({ imageUrlList: initialImageUrls, isError, errorReason }): JSX.Element {
+  const [imageList, setImageList] = useAtom(imageListAtom);
   const [isNotificationShown, setIsNotificationShown] = useState(false);
   const [fileListIterator, setFileListIterator] = useState<IterableIterator<File> | null>(null);
 
@@ -50,6 +52,10 @@ function Index({ imageUrls: initialImageUrls, isError, errorReason }): JSX.Eleme
   }, []);
 
   useEffect(() => {
+    setImageList(initialImageUrls);
+  }, [initialImageUrls]);
+
+  useEffect(() => {
     (async () => {
       if (fileListIterator === null) {
         return;
@@ -61,10 +67,10 @@ function Index({ imageUrls: initialImageUrls, isError, errorReason }): JSX.Eleme
         await putObject({ client: s3ClientInstance(), filename, body });
 
         const imageUrl = await createImageUrl({ imagePath: filename, secondsToExpire: SECONDS_TO_EXPIRE });
-        setImageUrls((prevState) => [...prevState, imageUrl]);
+        setImageList((prevState) => [...prevState, imageUrl]);
       }
     })();
-  }, [fileListIterator, imageUrls]);
+  }, [fileListIterator, imageList]);
 
   if (isError) {
     return <Error errorReason={errorReason} />;
@@ -76,7 +82,7 @@ function Index({ imageUrls: initialImageUrls, isError, errorReason }): JSX.Eleme
       <div className="absolute top-0 right-0">
         <UploadButton onChange={onChangeImageUpload} />
       </div>
-      <ImageList imageUrls={imageUrls} />
+      <ImageList imageUrls={imageList} />
       <div className="absolute right-2 bottom-2">
         <Notification
           isShown={isNotificationShown}
@@ -93,18 +99,18 @@ export async function getStaticProps(): Promise<{ props: Props }> {
   if (!hasAwsEnv(process.env)) {
     return {
       props: {
-        imageUrls: [],
+        imageUrlList: [],
         isError: true,
         errorReason: ERROR_REASON.NOT_SET_AWS_ENVIRONMENT_VARIABLES,
       },
     };
   }
 
-  const imageUrls = await fetchImageUrlList(s3ClientInstance(), SECONDS_TO_EXPIRE);
+  const imageUrlList = await fetchImageUrlList(s3ClientInstance(), SECONDS_TO_EXPIRE);
 
   return {
     props: {
-      imageUrls,
+      imageUrlList,
     },
   };
 }
