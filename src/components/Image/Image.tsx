@@ -1,5 +1,4 @@
-import { useCallback, useState } from 'react';
-import classNames from 'classnames';
+import { useCallback } from 'react';
 import { ImageEdit } from '../ImageEdit';
 
 type Props = {
