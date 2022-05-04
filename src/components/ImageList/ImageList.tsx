@@ -18,7 +18,7 @@ export function ImageList({ imageUrls }: Props): JSX.Element {
   return (
     <ul className="box-border columns-5 mt-4">
       {imageData.map(({ name, url }, index) => (
-        <li key={index} className="break-inside-avoid grid grid-flow-row">
+        <li key={index} className="break-inside-avoid grid grid-flow-row mb-4">
           <Image imageName={name} imageUrl={url} />
         </li>
       ))}
