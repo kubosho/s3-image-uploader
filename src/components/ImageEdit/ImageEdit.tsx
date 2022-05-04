@@ -45,15 +45,21 @@ export function ImageEdit({ url, alt }: Props): JSX.Element {
   }
 
   return (
-    <ul className="flex justify-center">
+    <ul className="flex gap-2">
       <li>
-        <button type="button" onClick={onDeleteImage}>
+        <button type="button" className="px-4 py-1 rounded-full bg-slate-900 text-slate-100" onClick={onDeleteImage}>
           Trash
         </button>
+      </li>
+      <li>
         {isAltTextEditMode ? (
           <AltTextEdit onClickSubmit={onSubmitAltTextEdit} />
         ) : (
-          <button type="button" onClick={onClickAltTextEditButton}>
+          <button
+            type="button"
+            className="px-4 py-1 rounded-full bg-slate-900 text-slate-100"
+            onClick={onClickAltTextEditButton}
+          >
             Alt
           </button>
         )}

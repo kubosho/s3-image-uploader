@@ -12,7 +12,7 @@ export function CopyToClipboardButton({ text, url }: Props): JSX.Element {
   }, [text, url]);
 
   return (
-    <button type="button" onClick={onClick}>
+    <button type="button" className="px-4 py-1 rounded-full bg-slate-900 text-slate-100" onClick={onClick}>
       &lt;&gt;
     </button>
   );
