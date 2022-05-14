@@ -441,7 +441,7 @@
     "@aws-sdk/types" "3.40.0"
     tslib "^2.3.0"
 
-"@aws-sdk/middleware-bucket-endpoint@3.41.0", "@aws-sdk/middleware-bucket-endpoint@^3.41.0":
+"@aws-sdk/middleware-bucket-endpoint@3.41.0":
   version "3.41.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/middleware-bucket-endpoint/-/middleware-bucket-endpoint-3.41.0.tgz#d1bb0fb59be1bb4176725c243561dd7897e710cb"
   integrity sha512-4A0kWHH2qemd4P7CZKS7XB6qtSUP2xMJ7Dn/llxYgvadR0mKEfGPeYPhAss/k7T1JGv+kSTIV30RwUXwdXgE/A==
@@ -451,6 +451,17 @@
     "@aws-sdk/util-arn-parser" "3.37.0"
     "@aws-sdk/util-config-provider" "3.40.0"
     tslib "^2.3.0"
+
+"@aws-sdk/middleware-bucket-endpoint@^3.80.0":
+  version "3.80.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/middleware-bucket-endpoint/-/middleware-bucket-endpoint-3.80.0.tgz#0632e94900472eb86d0cfdf521251a1bdefba843"
+  integrity sha512-FSSx6IgT7xftSlpjxoPKv8XI9nv7EK+OCODo2s3CmElMW1kBRdmQ/ImVuTwvqhdxJEVUeUdgupmC7cqyqgt04w==
+  dependencies:
+    "@aws-sdk/protocol-http" "3.78.0"
+    "@aws-sdk/types" "3.78.0"
+    "@aws-sdk/util-arn-parser" "3.55.0"
+    "@aws-sdk/util-config-provider" "3.55.0"
+    tslib "^2.3.1"
 
 "@aws-sdk/middleware-content-length@3.40.0":
   version "3.40.0"
@@ -622,13 +633,21 @@
     "@aws-sdk/types" "3.40.0"
     tslib "^2.3.0"
 
-"@aws-sdk/protocol-http@3.40.0", "@aws-sdk/protocol-http@^3.40.0":
+"@aws-sdk/protocol-http@3.40.0":
   version "3.40.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/protocol-http/-/protocol-http-3.40.0.tgz#ce6c7170a59e0a0eb63df5cd7cec87fe05bae680"
   integrity sha512-f4ea7/HZkjpvGBrnRIuzc/bhrExWrgDv7eulj4htPukZGHdTqSJD3Jk8lEXWvFuX2vUKQDGhEhCDsqup7YWJQQ==
   dependencies:
     "@aws-sdk/types" "3.40.0"
     tslib "^2.3.0"
+
+"@aws-sdk/protocol-http@3.78.0", "@aws-sdk/protocol-http@^3.78.0":
+  version "3.78.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/protocol-http/-/protocol-http-3.78.0.tgz#8a30db90e3373fe94e2b0007c3cba47b5c9e08bd"
+  integrity sha512-SQB26MhEK96yDxyXd3UAaxLz1Y/ZvgE4pzv7V3wZiokdEedM0kawHKEn1UQJlqJLEZcQI9QYyysh3rTvHZ3fyg==
+  dependencies:
+    "@aws-sdk/types" "3.78.0"
+    tslib "^2.3.1"
 
 "@aws-sdk/querystring-builder@3.40.0":
   version "3.40.0"
@@ -747,6 +766,13 @@
   dependencies:
     tslib "^2.3.0"
 
+"@aws-sdk/util-arn-parser@3.55.0":
+  version "3.55.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/util-arn-parser/-/util-arn-parser-3.55.0.tgz#6672eb2975e798a460bedfaf6b5618d4e4b262e1"
+  integrity sha512-76KJxp4MRWufHYWys7DFl64znr5yeJ3AIQNAPCKKw1sP0hzO7p6Kx0PaJnw9x+CPSzOrT4NbuApL6/srYhKDGg==
+  dependencies:
+    tslib "^2.3.1"
+
 "@aws-sdk/util-base64-browser@3.37.0":
   version "3.37.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/util-base64-browser/-/util-base64-browser-3.37.0.tgz#4bf105de91e5e17ded644557dac6851c30e992d2"
@@ -790,6 +816,13 @@
   integrity sha512-NjZGrA4mqhpr6gkVCAUweurP0Z9d3vFyXJCtulC0BFbpKAnKCf/crSK56NwUaNhAEMCkSuBvjRFzkbfT+HO8bA==
   dependencies:
     tslib "^2.3.0"
+
+"@aws-sdk/util-config-provider@3.55.0":
+  version "3.55.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/util-config-provider/-/util-config-provider-3.55.0.tgz#720c6c0ac1aa8d14be29d1dee25e01eb4925c0ce"
+  integrity sha512-30dzofQQfx6tp1jVZkZ0DGRsT0wwC15nEysKRiAcjncM64A0Cm6sra77d0os3vbKiKoPCI/lMsFr4o3533+qvQ==
+  dependencies:
+    tslib "^2.3.1"
 
 "@aws-sdk/util-create-request@3.41.0":
   version "3.41.0"
@@ -4163,17 +4196,10 @@
   resolved "https://registry.yarnpkg.com/@types/qs/-/qs-6.9.7.tgz#63bb7d067db107cc1e457c303bc25d511febf6cb"
   integrity sha512-FGa1F62FT09qcrueBA6qYTrJPVDzah9a+493+o2PCXsesWHIn27G98TsSMs3WPNbZIEj4+VJf6saSFpvD+3Zsw==
 
-"@types/react-dom@^17.0.11":
-  version "17.0.11"
-  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-17.0.11.tgz#e1eadc3c5e86bdb5f7684e00274ae228e7bcc466"
-  integrity sha512-f96K3k+24RaLGVu/Y2Ng3e1EbZ8/cVJvypZWd7cy0ofCBaf2lcM46xNhycMZ2xGwbBjRql7hOlZ+e2WlJ5MH3Q==
-  dependencies:
-    "@types/react" "*"
-
-"@types/react-dom@^18.0.0":
-  version "18.0.1"
-  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-18.0.1.tgz#cb3cc10ea91141b12c71001fede1017acfbce4db"
-  integrity sha512-jCwTXvHtRLiyVvKm9aEdHXs8rflVOGd5Sl913JZrPshfXjn8NYsTNZOz70bCsA31IR0TOqwi3ad+X4tSCBoMTw==
+"@types/react-dom@^18.0.0", "@types/react-dom@^18.0.4":
+  version "18.0.4"
+  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-18.0.4.tgz#dcbcadb277bcf6c411ceff70069424c57797d375"
+  integrity sha512-FgTtbqPOCI3dzZPZoC2T/sx3L34qxy99ITWn4eoSA95qPyXDMH0ALoAqUp49ITniiJFsXUVBtalh/KffMpg21Q==
   dependencies:
     "@types/react" "*"
 
@@ -13421,10 +13447,10 @@ vite-plugin-mdx@^3.5.6:
     resolve "^1.20.0"
     unified "^9.2.1"
 
-vite@^2.9.7:
-  version "2.9.7"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-2.9.7.tgz#210c328e08ed206ab0953eb1ca00860042cd0a77"
-  integrity sha512-5hH7aNQe8rJiTTqCtPNX/6mIKlGw+1wg8UXwAxDIIN8XaSR+Zx3GT2zSu7QKa1vIaBqfUODGh3vpwY8r0AW/jw==
+vite@^2.9.9:
+  version "2.9.9"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-2.9.9.tgz#8b558987db5e60fedec2f4b003b73164cb081c5e"
+  integrity sha512-ffaam+NgHfbEmfw/Vuh6BHKKlI/XIAhxE5QSS7gFLIngxg171mg1P3a4LSRME0z2ZU1ScxoKzphkipcYwSD5Ew==
   dependencies:
     esbuild "^0.14.27"
     postcss "^8.4.13"
