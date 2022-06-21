@@ -97,21 +97,26 @@ function Index({ imageUrlList: initialImageUrls, isError, errorReason }): JSX.El
 
 export async function getStaticProps(): Promise<{ props: Props }> {
   if (!hasAwsEnv(process.env)) {
+    const props = {
+      imageUrlList: [],
+      isError: true,
+      errorReason: ERROR_REASON.NOT_SET_AWS_ENVIRONMENT_VARIABLES,
+    };
+
     return {
-      props: {
-        imageUrlList: [],
-        isError: true,
-        errorReason: ERROR_REASON.NOT_SET_AWS_ENVIRONMENT_VARIABLES,
-      },
+      props,
     };
   }
 
   const imageUrlList = await fetchImageUrlList(s3ClientInstance(), SECONDS_TO_EXPIRE);
 
+  const props = {
+    imageUrlList,
+    isError: false,
+  };
+
   return {
-    props: {
-      imageUrlList,
-    },
+    props,
   };
 }
 
