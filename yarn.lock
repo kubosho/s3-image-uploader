@@ -711,6 +711,14 @@
     "@aws-sdk/types" "3.110.0"
     tslib "^2.3.1"
 
+"@aws-sdk/querystring-parser@3.212.0":
+  version "3.212.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/querystring-parser/-/querystring-parser-3.212.0.tgz#1a22d8fb472a1144d8780922bccaf43a9fc1fe06"
+  integrity sha512-ttarfAHMOYKgFHeBdgXID9SlNS7erH4gavN3fvf5R1RliCytUnzsTTvqa7CmVBFy0Xc/2yA+/6FFDKlOsS8tRg==
+  dependencies:
+    "@aws-sdk/types" "3.212.0"
+    tslib "^2.3.1"
+
 "@aws-sdk/s3-request-presigner@^3.45.0":
   version "3.45.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/s3-request-presigner/-/s3-request-presigner-3.45.0.tgz#ace7635c81fb9712db547ee5128d9a636f18f02d"
@@ -789,23 +797,37 @@
     "@aws-sdk/types" "3.40.0"
     tslib "^2.3.0"
 
-"@aws-sdk/types@3.110.0", "@aws-sdk/types@^3.1.0":
+"@aws-sdk/types@3.110.0":
   version "3.110.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/types/-/types-3.110.0.tgz#09404533b507925eadf9acf9c4356667048e45bd"
   integrity sha512-dLVoqODU3laaqNFPyN1QLtlQnwX4gNPMXptEBIt/iJpuZf66IYJe6WCzVZGt4Zfa1CnUmrlA428AzdcA/KCr2A==
+
+"@aws-sdk/types@3.212.0", "@aws-sdk/types@^3.1.0":
+  version "3.212.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/types/-/types-3.212.0.tgz#199ceafa82c9c14ed31a3f25992042287d804ca9"
+  integrity sha512-uXBXB1PBYxfPyIvgmjbGdYBlS7rdeMG58uCaY3Ga5scY2xQnj7HU7knATKuIKk2DH1lLT0inqtsRVJS25zRK5w==
 
 "@aws-sdk/types@3.40.0":
   version "3.40.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/types/-/types-3.40.0.tgz#a9d7926fcb9b699bc46be975033559d2293e60d1"
   integrity sha512-KpILcfvRaL88TLvo3SY4OuCCg90SvcNLPyjDwUuBqiOyWODjrKShHtAPJzej4CLp92lofh+ul0UnBfV9Jb/5PA==
 
-"@aws-sdk/url-parser@3.110.0", "@aws-sdk/url-parser@^3.78.0":
+"@aws-sdk/url-parser@3.110.0":
   version "3.110.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/url-parser/-/url-parser-3.110.0.tgz#87d5c0a6f6d2f29027c747c65d8a2846302bc792"
   integrity sha512-tILFB8/Q73yzgO0dErJNnELmmBszd0E6FucwAnG3hfDefjqCBe09Q/1yhu2aARXyRmZa4AKp0sWcdwIWHc8dnA==
   dependencies:
     "@aws-sdk/querystring-parser" "3.110.0"
     "@aws-sdk/types" "3.110.0"
+    tslib "^2.3.1"
+
+"@aws-sdk/url-parser@^3.212.0":
+  version "3.212.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/url-parser/-/url-parser-3.212.0.tgz#d4fae88783a5e8f8b59bfceedce269ec87a18f37"
+  integrity sha512-mTUQQRcVYqur7aHDuDMDKxN7Yr/5kIZB1RtMjIwtimTcf7TZaskN6sLTPo42YgASM6XQQhJECZaOE7Ow16i6Mg==
+  dependencies:
+    "@aws-sdk/querystring-parser" "3.212.0"
+    "@aws-sdk/types" "3.212.0"
     tslib "^2.3.1"
 
 "@aws-sdk/util-arn-parser@3.37.0":
