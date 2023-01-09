@@ -9981,10 +9981,10 @@ jest@^28.1.3:
     import-local "^3.0.2"
     jest-cli "^28.1.3"
 
-jotai@^1.6.5:
-  version "1.6.5"
-  resolved "https://registry.yarnpkg.com/jotai/-/jotai-1.6.5.tgz#989efe63dc65beea23b3a5eab56f689d78e38070"
-  integrity sha512-B+DGV5ALIkIeyA1Bi9yBpdGmcWkmDS/p8C1XFYx9jFBs+lkeOdu0WAozAPCG4Qq1EcQ68vF+07HmPYFN5kf9OQ==
+jotai@^1.12.1:
+  version "1.12.1"
+  resolved "https://registry.yarnpkg.com/jotai/-/jotai-1.12.1.tgz#18808724c96f8c038f6ee8b75f3ac37e1ac35608"
+  integrity sha512-t6gsYM1WkQHMOazaZYLykCA+fh9KPDGrA+tDYzDeV0268QsCqmX6S4lO46uswgt1LGUeG0EDFGuMd9ac8cWNTA==
 
 js-sdsl@^4.1.4:
   version "4.2.0"
