@@ -13,7 +13,7 @@
   "devDependencies": {
     "@babel/core": "^7.17.10",
     "@storybook/addon-actions": "^6.4.22",
-    "@storybook/addon-essentials": "^6.4.22",
+    "@storybook/addon-essentials": "^7.2.2",
     "@storybook/addon-interactions": "^6.5.9",
     "@storybook/addon-links": "^6.4.22",
     "@storybook/addon-postcss": "^2.0.0",
