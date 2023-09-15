@@ -53,7 +53,7 @@
     "@aws-sdk/hash-node": "^3.40.0",
     "@aws-sdk/middleware-bucket-endpoint": "^3.310.0",
     "@aws-sdk/protocol-http": "^3.78.0",
-    "@aws-sdk/s3-request-presigner": "^3.45.0",
+    "@aws-sdk/s3-request-presigner": "^3.413.0",
     "@aws-sdk/url-parser": "^3.226.0",
     "classnames": "^2.3.1",
     "dotenv": "^16.0.1",
