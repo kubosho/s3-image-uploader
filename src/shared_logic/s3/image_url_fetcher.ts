@@ -16,10 +16,15 @@ async function fetchObjectKeys(client: S3Client): Promise<string[]> {
 }
 
 export async function fetchImageUrlList(client: S3Client, secondsToExpire: number): Promise<string[]> {
-  const objectKeys = await fetchObjectKeys(client);
-  const imageUrlList = await Promise.all(
-    objectKeys.map(async (key) => await createImageUrl({ imagePath: key, secondsToExpire })),
-  );
+  try {
+    const objectKeys = await fetchObjectKeys(client);
+    const imageUrlList = await Promise.all(
+      objectKeys.map(async (key) => await createImageUrl({ imagePath: key, secondsToExpire })),
+    );
 
-  return imageUrlList;
+    return imageUrlList;
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
 }
