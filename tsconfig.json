@@ -1,3 +1,7 @@
 {
-  "extends": "@kubosho/configs/typescript/tsconfig.json"
+  "extends": "@kubosho/configs/typescript/tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ESNext"],
+    "jsx": "react-jsx"
+  }
 }
