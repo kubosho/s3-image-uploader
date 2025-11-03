@@ -7,8 +7,8 @@ type Props = {
 export const SiteHeader = ({ siteTitle }: Props): JSX.Element => (
   <header className="p-3 bg-navy-600">
     <h1>
-      <Link href="/">
-        <a className="text-white">{siteTitle}</a>
+      <Link href="/" className="text-white">
+        {siteTitle}
       </Link>
     </h1>
   </header>
