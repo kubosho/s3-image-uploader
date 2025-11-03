@@ -6,7 +6,7 @@ type Props = {
   imageUrl: string;
 };
 
-export function Image({ imageName, imageUrl }: Props): JSX.Element {
+export function Image({ imageName, imageUrl }: Props): React.JSX.Element {
   const onClickHandler = useCallback((event) => {
     event.preventDefault();
   }, []);

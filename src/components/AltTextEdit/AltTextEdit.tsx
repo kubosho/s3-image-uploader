@@ -3,7 +3,7 @@ type Props = {
   onClickSubmit?: () => void;
 };
 
-export function AltTextEdit({ initialText, onClickSubmit }: Props): JSX.Element {
+export function AltTextEdit({ initialText, onClickSubmit }: Props): React.JSX.Element {
   return (
     <>
       <label htmlFor="alt-text">Alt</label>

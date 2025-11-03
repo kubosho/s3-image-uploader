@@ -5,7 +5,7 @@ type Props = {
   onClick?: () => void;
 };
 
-export const UploadButton = ({ onClick, onChange }: Props): JSX.Element => {
+export const UploadButton = ({ onClick, onChange }: Props): React.JSX.Element => {
   const inputFileRef = useRef<HTMLInputElement>(null);
 
   const onClickImageUpload = useCallback(() => {

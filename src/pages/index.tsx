@@ -22,7 +22,7 @@ type Props = {
 
 const SECONDS_TO_EXPIRE = 600;
 
-function Index({ imageUrlList: initialImageUrls, isError, errorReason }): JSX.Element {
+function Index({ imageUrlList: initialImageUrls, isError, errorReason }): React.JSX.Element {
   const [imageList, setImageList] = useAtom(imageListAtom);
   const [isNotificationShown, setIsNotificationShown] = useState(false);
   const [fileListIterator, setFileListIterator] = useState<IterableIterator<File> | null>(null);
@@ -79,7 +79,7 @@ function Index({ imageUrlList: initialImageUrls, isError, errorReason }): JSX.El
   return (
     <>
       <SiteHeader siteTitle="S3 image uploader" />
-      <div className="absolute top-0 right-0">
+      <div>
         <UploadButton onChange={onChangeImageUpload} />
       </div>
       <ImageList imageUrls={imageList} />

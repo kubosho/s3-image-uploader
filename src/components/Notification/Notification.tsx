@@ -7,7 +7,7 @@ type Props = {
   onClickCloseButton: () => void;
 };
 
-export const Notification = ({ isShown, text, buttonText, onClickCloseButton }: Props): JSX.Element => {
+export const Notification = ({ isShown, text, buttonText, onClickCloseButton }: Props): React.JSX.Element => {
   const ref = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {

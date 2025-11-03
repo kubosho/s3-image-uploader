@@ -4,7 +4,7 @@ type Props = {
   siteTitle: string;
 };
 
-export const SiteHeader = ({ siteTitle }: Props): JSX.Element => (
+export const SiteHeader = ({ siteTitle }: Props): React.JSX.Element => (
   <header className="p-3 bg-navy-600">
     <h1>
       <Link href="/" className="text-white">

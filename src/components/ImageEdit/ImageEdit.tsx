@@ -13,7 +13,7 @@ type Props = {
   alt: string;
 };
 
-export function ImageEdit({ url, alt }: Props): JSX.Element {
+export function ImageEdit({ url, alt }: Props): React.JSX.Element {
   const [imageList, setImageList] = useAtom(imageListAtom);
   const [isAltTextEditMode, setIsAltTextEditMode] = useState(false);
   const modifiedUrl = useMemo(() => convertCdnUrl(url), [url]);

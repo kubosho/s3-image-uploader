@@ -6,7 +6,7 @@ type Props = {
   errorReason: ErrorReason;
 };
 
-function ErrorContainer({ children }: { children: ReactNode }): JSX.Element {
+function ErrorContainer({ children }: { children: ReactNode }): React.JSX.Element {
   return (
     <>
       <SiteHeader siteTitle="S3 image uploader" />
@@ -17,7 +17,7 @@ function ErrorContainer({ children }: { children: ReactNode }): JSX.Element {
   );
 }
 
-export function Error({ errorReason }: Props): JSX.Element {
+export function Error({ errorReason }: Props): React.JSX.Element {
   switch (errorReason) {
     case ERROR_REASON.NOT_SET_AWS_ENVIRONMENT_VARIABLES:
       return (

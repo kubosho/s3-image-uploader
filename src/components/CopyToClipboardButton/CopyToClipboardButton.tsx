@@ -6,7 +6,7 @@ type Props = {
   url: string;
 };
 
-export function CopyToClipboardButton({ text, url }: Props): JSX.Element {
+export function CopyToClipboardButton({ text, url }: Props): React.JSX.Element {
   const onClick = useCallback(() => {
     copyTextToClipboard(`[${text}](${url})`);
   }, [text, url]);

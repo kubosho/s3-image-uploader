@@ -4,7 +4,7 @@ type Props = {
   imageUrls: string[];
 };
 
-export function ImageList({ imageUrls }: Props): JSX.Element {
+export function ImageList({ imageUrls }: Props): React.JSX.Element {
   const imageData = imageUrls.map((url) => {
     const u = new URL(url);
     const name = u.pathname.slice(1);
