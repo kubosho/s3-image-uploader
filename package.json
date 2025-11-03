@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "@babel/core": "7.17.10",
+    "@kubosho/configs": "6.5.9",
     "@storybook/addon-actions": "9.0.8",
     "@storybook/addon-links": "10.0.2",
     "@storybook/addon-postcss": "2.0.0",
