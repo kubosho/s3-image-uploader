@@ -1,7 +1,8 @@
 {
   "extends": "@kubosho/configs/typescript/tsconfig.json",
   "compilerOptions": {
-    "lib": ["ESNext"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "jsx": "react-jsx"
   }
 }
