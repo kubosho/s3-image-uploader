@@ -2,34 +2,38 @@
 
 Image uploader for AWS S3.
 
+## Requirements
+
+- Deno
+
 ## Development
 
 Launch development server:
 
-```
-yarn dev
+```bash
+deno task dev
 ```
 
 Execute build:
 
-```
-yarn build
+```bash
+deno task build
 ```
 
 Run lint:
 
-```
-yarn lint
+```bash
+deno task lint
 ```
 
 Run test runner:
 
-```
-yarn test
+```bash
+deno task test
 ```
 
 Launch storybook:
 
-```
-yarn storybook
+```bash
+deno task storybook
 ```
