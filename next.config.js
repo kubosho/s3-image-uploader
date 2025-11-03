@@ -8,7 +8,6 @@ module.exports = {
     AWS_CLOUD_FRONT_HOST_NAME: process.env.AWS_CLOUD_FRONT_HOST_NAME,
   },
   images: {
-    domains: [`${process.env.AWS_S3_BUCKET_NAME}.${process.env.AWS_S3_HOST_NAME}`],
-  },
-  swcMinify: true,
+    remotePatterns: [new URL(`https://${process.env.AWS_S3_BUCKET_NAME}.${process.env.AWS_S3_HOST_NAME}/**`)],
+  }
 };
