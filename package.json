@@ -12,6 +12,7 @@
     "storybook": "start-storybook -p 6006"
   },
   "dependencies": {
+    "@ark-ui/react": "5.27.1",
     "@aws-sdk/client-s3": "3.922.0",
     "@aws-sdk/hash-node": "3.370.0",
     "@aws-sdk/middleware-bucket-endpoint": "3.922.0",
