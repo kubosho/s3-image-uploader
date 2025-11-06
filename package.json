@@ -4,12 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev",
+    "dev": "PORT=45537 next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "PORT=45537 next start",
     "lint": "next lint",
     "test": "jest",
-    "storybook": "start-storybook -p 6006"
+    "storybook": "start-storybook -p 45538"
   },
   "dependencies": {
     "@ark-ui/react": "5.27.1",
