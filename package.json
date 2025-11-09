@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "PORT=45537 next dev",
     "build": "next build",
+    "format": "prettier --write .",
     "start": "PORT=45537 next start",
     "lint": "eslint .",
     "test": "jest",
