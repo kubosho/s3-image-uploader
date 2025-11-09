@@ -6,4 +6,4 @@ export const AWS_ENV = {
   AWS_S3_REGION_NAME: 'AWS_S3_REGION_NAME',
 } as const;
 
-export type AwsEnv = typeof AWS_ENV[keyof typeof AWS_ENV];
+export type AwsEnv = (typeof AWS_ENV)[keyof typeof AWS_ENV];

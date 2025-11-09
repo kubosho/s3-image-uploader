@@ -1,5 +1,6 @@
 import { fromEvent, Observable } from 'rxjs';
 import { filter, map, tap } from 'rxjs/operators';
+
 import { isFormElement } from '../is_form_element';
 import { IndexPageShortcutKey, indexPageShortcutKeys } from './shortcut_keys';
 

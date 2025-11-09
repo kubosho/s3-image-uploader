@@ -1,4 +1,5 @@
 import { ListObjectsCommand, S3Client } from '@aws-sdk/client-s3';
+
 import { createImageUrl } from './image_url_creator';
 
 async function fetchObjectKeys(client: S3Client): Promise<string[]> {

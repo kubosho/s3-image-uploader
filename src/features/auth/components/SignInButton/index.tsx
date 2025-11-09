@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { handleSignIn } from "../../server-actions";
+import { handleSignIn } from '../../server-actions';
 
 export function SignInButton() {
   return (

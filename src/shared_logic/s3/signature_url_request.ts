@@ -1,6 +1,6 @@
-import { S3RequestPresigner } from '@aws-sdk/s3-request-presigner';
 import { Hash } from '@aws-sdk/hash-node';
 import { HttpRequest } from '@aws-sdk/protocol-http';
+import { S3RequestPresigner } from '@aws-sdk/s3-request-presigner';
 import { parseUrl } from '@aws-sdk/url-parser';
 
 type Params = {

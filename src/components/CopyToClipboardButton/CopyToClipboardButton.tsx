@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+
 import { copyTextToClipboard } from './copy_text_to_clipboard';
 
 type Props = {

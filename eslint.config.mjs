@@ -1,31 +1,21 @@
-import config from "@kubosho/configs/eslint";
-import { defineConfig, globalIgnores } from "eslint/config";
-import storybook from "eslint-plugin-storybook";
+import config from '@kubosho/configs/eslint';
+import { defineConfig, globalIgnores } from 'eslint/config';
+import storybook from 'eslint-plugin-storybook';
 
 export default defineConfig([
   ...config,
-  globalIgnores([
-    ".next/**",
-    "build/**",
-    "next-env.d.ts",
-    "out/**",
-  ]),
+  globalIgnores(['.next/**', 'build/**', 'next-env.d.ts', 'out/**']),
   {
-    files: ["**/*.stories.ts", "**/*.stories.tsx"],
-    extends: [storybook.configs["flat/recommended"]],
+    files: ['**/*.stories.ts', '**/*.stories.tsx'],
+    extends: [storybook.configs['flat/recommended']],
   },
   {
-    files: ["**/*.ts", "**/*.tsx"],
+    files: ['**/*.ts', '**/*.tsx'],
     rules: {
-      "import/no-extraneous-dependencies": [
-        "error",
+      'import/no-extraneous-dependencies': [
+        'error',
         {
-          devDependencies: [
-            "**/.storybook/**/*.ts",
-            "**/*.config.*",
-            "**/*.stories.*",
-            "**/*.test.*",
-          ],
+          devDependencies: ['**/.storybook/**/*.ts', '**/*.config.*', '**/*.stories.*', '**/*.test.*'],
         },
       ],
     },

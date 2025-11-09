@@ -1,5 +1,5 @@
-import NextAuth from "next-auth";
-import Google from "next-auth/providers/google";
+import NextAuth from 'next-auth';
+import Google from 'next-auth/providers/google';
 
 type Provider = {
   id: string;
@@ -8,8 +8,8 @@ type Provider = {
 
 export const providers: Provider[] = [
   {
-    id: "google",
-    name: "Google",
+    id: 'google',
+    name: 'Google',
   },
 ];
 

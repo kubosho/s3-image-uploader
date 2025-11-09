@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { handleSignOut } from "../../server-actions";
+import { handleSignOut } from '../../server-actions';
 
 export function SignOutButton() {
   return (

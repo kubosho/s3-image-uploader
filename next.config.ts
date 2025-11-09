@@ -1,4 +1,4 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   env: {
@@ -10,11 +10,7 @@ const nextConfig: NextConfig = {
     AWS_CLOUD_FRONT_HOST_NAME: process.env.AWS_CLOUD_FRONT_HOST_NAME,
   },
   images: {
-    remotePatterns: [
-      new URL(
-        `https://${process.env.AWS_S3_BUCKET_NAME}.${process.env.AWS_S3_HOST_NAME}/**`,
-      ),
-    ],
+    remotePatterns: [new URL(`https://${process.env.AWS_S3_BUCKET_NAME}.${process.env.AWS_S3_HOST_NAME}/**`)],
   },
 };
 
