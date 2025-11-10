@@ -1,1 +1,6 @@
 @import 'tailwindcss';
+@import '../../node_modules/@o2project/design-system/main.css';
+
+@theme {
+  --radius-1: 0.25rem;
+}
