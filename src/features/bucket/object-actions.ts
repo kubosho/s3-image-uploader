@@ -3,6 +3,8 @@ import {
   type DeleteObjectCommandOutput,
   GetObjectCommand,
   type GetObjectCommandOutput,
+  type ListObjectsCommandOutput,
+  ListObjectsV2Command,
   PutObjectCommand,
   type PutObjectCommandOutput,
   S3ServiceException,
@@ -13,6 +15,7 @@ import { s3ClientInstance } from './s3-client-instance';
 interface ObjectActions {
   upsertObject: (params: { filename: string; body: Uint8Array }) => Promise<PutObjectCommandOutput>;
   readObject: (params: { filename: string }) => Promise<GetObjectCommandOutput>;
+  readObjects: (params: { limit: number; startingAfter?: string }) => Promise<ListObjectsCommandOutput>;
   deleteObject: (params: { filename: string }) => Promise<DeleteObjectCommandOutput>;
 }
 
@@ -55,6 +58,29 @@ class S3ObjectActions implements ObjectActions {
     } catch (error) {
       if (error instanceof S3ServiceException) {
         console.error('getObject failed', { key: filename, code: error.name, message: error.message });
+        throw error;
+      }
+
+      throw new Error('Unexpected S3 failure', { cause: error });
+    }
+  }
+
+  async readObjects(params: { limit: number; startingAfter?: string }): Promise<ListObjectsCommandOutput> {
+    const { limit, startingAfter } = params;
+    const client = s3ClientInstance();
+
+    const command = new ListObjectsV2Command({
+      Bucket: process.env.AWS_S3_BUCKET_NAME,
+      ContinuationToken: startingAfter,
+      MaxKeys: limit,
+    });
+
+    try {
+      const data = await client.send(command);
+      return data;
+    } catch (error) {
+      if (error instanceof S3ServiceException) {
+        console.error('listObjectsV2 failed', { code: error.name, message: error.message });
         throw error;
       }
 
