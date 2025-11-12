@@ -29,7 +29,7 @@ describe('fetchImageUrls', () => {
   it('returns signed image URLs when S3 objects are available', async () => {
     // Arrange
     jest.spyOn(objectActions, 'readObjects').mockResolvedValue({
-      Contents: [{ Key: 'image-a.png' }, { Key: 'image-b.jpg' }, { Key: undefined }],
+      Contents: [{ Key: 'images/' }, { Key: 'image-a.png' }, { Key: 'image-b.jpg' }, { Key: undefined }],
       $metadata: {},
     });
 
