@@ -1,0 +1,76 @@
+import { S3ServiceException } from '@aws-sdk/client-s3';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+
+import { fetchImageUrls } from './image-url-fetcher';
+import { objectActions } from './object-actions';
+
+jest.mock('./s3-client-instance', () => ({
+  s3ClientInstance: jest.fn().mockReturnValue({
+    config: {},
+    destroy: jest.fn(),
+  }),
+}));
+
+const createFakeS3ServiceException = (message: string): S3ServiceException =>
+  new S3ServiceException({
+    name: 'S3ServiceException',
+    $fault: 'client',
+    $metadata: {},
+    message,
+  });
+
+describe('fetchImageUrls', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.restoreAllMocks();
+    process.env.AWS_S3_BUCKET_NAME = 'test-bucket';
+  });
+
+  it('returns signed image URLs when S3 objects are available', async () => {
+    // Arrange
+    jest.spyOn(objectActions, 'readObjects').mockResolvedValue({
+      Contents: [{ Key: 'image-a.png' }, { Key: 'image-b.jpg' }, { Key: undefined }],
+      $metadata: {},
+    });
+
+    // Act
+    const result = await fetchImageUrls({ limit: 3, secondsToExpire: 600 });
+
+    // Assert
+    expect(result).toHaveLength(2);
+    expect(result[0]).toMatch(
+      /^https:\/\/test-bucket\.s3\.[^/]+\.amazonaws\.com\/image-a\.png\?.*X-Amz-Algorithm=.*&.*X-Amz-Signature=/,
+    );
+    expect(result[1]).toMatch(
+      /^https:\/\/test-bucket\.s3\.[^/]+\.amazonaws\.com\/image-b\.jpg\?.*X-Amz-Algorithm=.*&.*X-Amz-Signature=/,
+    );
+  });
+
+  it('returns an empty array when an S3ServiceException occurs', async () => {
+    // Arrange
+    const s3Error = createFakeS3ServiceException('S3 failure');
+    jest.spyOn(objectActions, 'readObjects').mockImplementation(() => {
+      throw s3Error;
+    });
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+
+    // Act
+    const result = await fetchImageUrls({ limit: 2, secondsToExpire: 120 });
+
+    // Assert
+    expect(result).toEqual([]);
+  });
+
+  it('returns an empty array when an unexpected error occurs', async () => {
+    // Arrange
+    const unexpectedError = new Error('Unexpected failure');
+    jest.spyOn(objectActions, 'readObjects').mockRejectedValue(unexpectedError);
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+
+    // Act
+    const result = await fetchImageUrls({ limit: 5, secondsToExpire: 300 });
+
+    // Assert
+    expect(result).toEqual([]);
+  });
+});
