@@ -23,6 +23,13 @@ if (region == null || region === '') {
 
 const providerName = `cognito-idp.${region}.amazonaws.com/${userPoolId}`;
 
+// fromCognitoIdentityPool memoizes credentials until they expire while the provider instance lives.
+// Building a new S3Client per request re-ran the Cognito exchange every time, twice per request
+// since both presigning and listing call getS3Client. Caching the client by ID token collapses
+// that to one exchange per token. A single entry avoids the stale-token buildup a Map would cause.
+// A different token just rebuilds, which matches the previous unconditional behavior.
+let cachedClient: { token: string; client: S3Client } | null = null;
+
 export async function getS3Client(): Promise<S3Client> {
   const session = await auth();
 
@@ -30,7 +37,11 @@ export async function getS3Client(): Promise<S3Client> {
     throw new Error('No authenticated session or ID token available');
   }
 
-  return new S3Client({
+  if (cachedClient != null && cachedClient.token === session.token) {
+    return cachedClient.client;
+  }
+
+  const client = new S3Client({
     region,
     credentials: fromCognitoIdentityPool({
       identityPoolId,
@@ -40,4 +51,8 @@ export async function getS3Client(): Promise<S3Client> {
       },
     }),
   });
+
+  cachedClient = { token: session.token, client };
+
+  return client;
 }
