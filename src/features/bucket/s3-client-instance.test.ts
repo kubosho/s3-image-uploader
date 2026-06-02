@@ -48,6 +48,49 @@ describe('S3 Client Instance', () => {
     expect(client).toBeDefined();
   });
 
+  it('reuses the same client instance for the same ID token', async () => {
+    // Arrange
+    const { auth } = await import('../auth/auth');
+    const mockAuth = auth as unknown as jest.MockedFunction<() => Promise<Session | null>>;
+    mockAuth.mockResolvedValue({
+      user: { email: 'test@example.com' },
+      token: 'valid-id-token',
+      expires: '2099-01-01',
+    });
+
+    // Act
+    const { getS3Client } = await import('./s3-client-instance');
+    const first = await getS3Client();
+    const second = await getS3Client();
+
+    // Assert
+    expect(second).toBe(first);
+  });
+
+  it('creates a new client instance when the ID token changes', async () => {
+    // Arrange
+    const { auth } = await import('../auth/auth');
+    const mockAuth = auth as unknown as jest.MockedFunction<() => Promise<Session | null>>;
+    mockAuth.mockResolvedValueOnce({
+      user: { email: 'test@example.com' },
+      token: 'first-token',
+      expires: '2099-01-01',
+    });
+    mockAuth.mockResolvedValueOnce({
+      user: { email: 'test@example.com' },
+      token: 'second-token',
+      expires: '2099-01-01',
+    });
+
+    // Act
+    const { getS3Client } = await import('./s3-client-instance');
+    const first = await getS3Client();
+    const second = await getS3Client();
+
+    // Assert
+    expect(second).not.toBe(first);
+  });
+
   it('should throw error if idToken is missing', async () => {
     // Arrange
     const { auth } = await import('../auth/auth');
