@@ -6,12 +6,7 @@ jest.unstable_mockModule('@dotenvx/dotenvx', () => ({
   get: jest.fn((key: string) => process.env[key]),
 }));
 
-jest.unstable_mockModule('../auth/auth', () => ({
-  auth: jest.fn(),
-}));
-
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
-import type { Session } from 'next-auth';
 
 describe('S3 Client Instance', () => {
   const ORIGINAL_ENV = process.env;
@@ -30,78 +25,40 @@ describe('S3 Client Instance', () => {
   });
 
   it('should create a new S3 client instance', async () => {
-    // Arrange
-    const { auth } = await import('../auth/auth');
-    const mockAuth = auth as unknown as jest.MockedFunction<() => Promise<Session | null>>;
-
-    mockAuth.mockResolvedValue({
-      user: { email: 'test@example.com' },
-      token: 'valid-id-token',
-      expires: '2099-01-01',
-    });
-
     // Act
     const { getS3Client } = await import('./s3-client-instance');
-    const client = await getS3Client();
+    const client = getS3Client('valid-id-token');
 
     // Assert
     expect(client).toBeDefined();
   });
 
   it('reuses the same client instance for the same ID token', async () => {
-    // Arrange
-    const { auth } = await import('../auth/auth');
-    const mockAuth = auth as unknown as jest.MockedFunction<() => Promise<Session | null>>;
-    mockAuth.mockResolvedValue({
-      user: { email: 'test@example.com' },
-      token: 'valid-id-token',
-      expires: '2099-01-01',
-    });
-
     // Act
     const { getS3Client } = await import('./s3-client-instance');
-    const first = await getS3Client();
-    const second = await getS3Client();
+    const first = getS3Client('valid-id-token');
+    const second = getS3Client('valid-id-token');
 
     // Assert
     expect(second).toBe(first);
   });
 
   it('creates a new client instance when the ID token changes', async () => {
-    // Arrange
-    const { auth } = await import('../auth/auth');
-    const mockAuth = auth as unknown as jest.MockedFunction<() => Promise<Session | null>>;
-    mockAuth.mockResolvedValueOnce({
-      user: { email: 'test@example.com' },
-      token: 'first-token',
-      expires: '2099-01-01',
-    });
-    mockAuth.mockResolvedValueOnce({
-      user: { email: 'test@example.com' },
-      token: 'second-token',
-      expires: '2099-01-01',
-    });
-
     // Act
     const { getS3Client } = await import('./s3-client-instance');
-    const first = await getS3Client();
-    const second = await getS3Client();
+    const first = getS3Client('first-token');
+    const second = getS3Client('second-token');
 
     // Assert
     expect(second).not.toBe(first);
   });
 
   it('should throw error if idToken is missing', async () => {
-    // Arrange
-    const { auth } = await import('../auth/auth');
-    const mockAuth = auth as unknown as jest.MockedFunction<() => Promise<Session | null>>;
-    mockAuth.mockResolvedValue(null);
-
     // Act
     const { getS3Client } = await import('./s3-client-instance');
 
     // Assert
-    await expect(getS3Client()).rejects.toThrow('No authenticated session or ID token available');
+    expect(() => getS3Client('')).toThrow('No authenticated session or ID token available');
   });
 
   it('throws at module load when AUTH_COGNITO_ISSUER is missing', async () => {

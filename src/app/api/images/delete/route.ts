@@ -3,7 +3,7 @@ import { objectActions } from '../../../../features/bucket/object-actions';
 
 export async function DELETE(request: Request): Promise<Response> {
   const session = await auth();
-  if (session?.user == null) {
+  if (session?.user == null || session.token == null) {
     return Response.json(
       {
         message: 'Unauthorized',
@@ -25,7 +25,7 @@ export async function DELETE(request: Request): Promise<Response> {
   }
 
   try {
-    const result = await objectActions.deleteObject({ filename });
+    const result = await objectActions.deleteObject({ filename, idToken: session.token });
     if ('message' in result) {
       return Response.json(
         {

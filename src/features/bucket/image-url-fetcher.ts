@@ -12,8 +12,13 @@ const bucketName = dotenvxGet('AWS_S3_BUCKET_NAME');
 async function fetchFileKeys(params: {
   limit: number;
   nextToken?: string;
+  idToken: string;
 }): Promise<{ keys: string[]; nextToken?: string }> {
-  const response = await objectActions.readObjects({ limit: params.limit, startingAfter: params.nextToken });
+  const response = await objectActions.readObjects({
+    limit: params.limit,
+    startingAfter: params.nextToken,
+    idToken: params.idToken,
+  });
   const keys = response.Contents?.flatMap((item) => (item.Key && !item.Key.endsWith('/') ? [item.Key] : [])) ?? [];
 
   return {
@@ -26,12 +31,14 @@ export async function fetchImageUrls(params: {
   limit: number;
   nextToken?: string;
   secondsToExpire: number;
+  idToken: string;
 }): Promise<GetImagesSuccessResponseObject | GetImagesErrorResponseObject> {
-  const client = await getS3Client();
+  const client = getS3Client(params.idToken);
 
   const { keys, nextToken } = await fetchFileKeys({
     limit: params.limit,
     nextToken: params.nextToken,
+    idToken: params.idToken,
   });
 
   const urls = await Promise.all(

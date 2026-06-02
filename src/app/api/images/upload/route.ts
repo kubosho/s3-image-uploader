@@ -16,7 +16,7 @@ const imageData = new WeakMap<Request, Uint8Array>();
  */
 export async function POST(request: Request): Promise<NextResponse<UpsertImagesResponseObject>> {
   const session = await auth();
-  if (session?.user == null) {
+  if (session?.user == null || session.token == null) {
     return NextResponse.json(
       {
         message: 'Unauthorized',
@@ -65,6 +65,7 @@ export async function POST(request: Request): Promise<NextResponse<UpsertImagesR
       filename,
       // Don't consider the absence of a request.
       body: imageData.get(request)!,
+      idToken: session.token,
     });
 
     return NextResponse.json(
