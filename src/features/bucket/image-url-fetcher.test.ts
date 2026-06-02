@@ -16,7 +16,7 @@ jest.unstable_mockModule('@dotenvx/dotenvx', () => ({
 
 // Prevent 'next-auth' execution side-effects.
 jest.unstable_mockModule('./s3-client-instance', () => ({
-  getS3Client: jest.fn<() => Promise<S3Client>>().mockResolvedValue({
+  getS3Client: jest.fn<(idToken: string) => S3Client>().mockReturnValue({
     config: {},
     middlewareStack: jest.fn(),
     destroy: jest.fn(),
@@ -57,7 +57,11 @@ describe('fetchImageUrls', () => {
     });
 
     // Act
-    const result = (await fetchImageUrls({ limit: 3, secondsToExpire: 600 })) as GetImagesSuccessResponseObject;
+    const result = (await fetchImageUrls({
+      limit: 3,
+      secondsToExpire: 600,
+      idToken: 'valid-id-token',
+    })) as GetImagesSuccessResponseObject;
 
     // Assert
     expect(result.urls).toHaveLength(2);

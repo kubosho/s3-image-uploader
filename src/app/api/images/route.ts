@@ -9,7 +9,7 @@ const DEFAULT_LIMIT = 20 as const;
 
 export async function GET(request: Request): Promise<NextResponse<GetImagesResponseObject>> {
   const session = await auth();
-  if (session?.user == null) {
+  if (session?.user == null || session.token == null) {
     return NextResponse.json(
       {
         message: 'Unauthorized',
@@ -47,6 +47,7 @@ export async function GET(request: Request): Promise<NextResponse<GetImagesRespo
       limit,
       nextToken,
       secondsToExpire: expiresIn,
+      idToken: session.token,
     });
     if ('message' in result) {
       return NextResponse.json(

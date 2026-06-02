@@ -2,8 +2,6 @@ import { S3Client } from '@aws-sdk/client-s3';
 import { fromCognitoIdentityPool } from '@aws-sdk/credential-providers';
 import { get as dotenvxGet } from '@dotenvx/dotenvx';
 
-import { auth } from '../auth/auth';
-
 // Execute the function at the module scope to avoid multiple decryptions
 const issuer = dotenvxGet('AUTH_COGNITO_ISSUER');
 const userPoolId = issuer?.split('/').pop();
@@ -30,14 +28,14 @@ const providerName = `cognito-idp.${region}.amazonaws.com/${userPoolId}`;
 // A different token just rebuilds, which matches the previous unconditional behavior.
 let cachedClient: { token: string; client: S3Client } | null = null;
 
-export async function getS3Client(): Promise<S3Client> {
-  const session = await auth();
-
-  if (session == null || session.token == null) {
+// The ID token is passed in rather than resolved here so the caller can run auth() once per
+// request instead of once per getS3Client call.
+export function getS3Client(idToken: string): S3Client {
+  if (idToken === '') {
     throw new Error('No authenticated session or ID token available');
   }
 
-  if (cachedClient != null && cachedClient.token === session.token) {
+  if (cachedClient != null && cachedClient.token === idToken) {
     return cachedClient.client;
   }
 
@@ -47,12 +45,12 @@ export async function getS3Client(): Promise<S3Client> {
       identityPoolId,
       clientConfig: { region },
       logins: {
-        [providerName]: session.token,
+        [providerName]: idToken,
       },
     }),
   });
 
-  cachedClient = { token: session.token, client };
+  cachedClient = { token: idToken, client };
 
   return client;
 }
