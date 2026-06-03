@@ -1,5 +1,5 @@
 ---
-status: todo
+status: done
 ---
 
 # 画像アップロードUIのリッチ化と状況表示の改善
@@ -70,19 +70,31 @@ status: todo
 
 ## 技術的制約
 
-- ドラッグ&ドロップ・サムネイル・ファイル一覧は ark-ui `FileUpload` のパーツ（`Dropzone`、`ItemGroup`、`Item`、`ItemPreviewImage`、`ItemName` など）を土台にし、自前の DnD / プレビュー実装は追加しない。自前実装はファイル単位のアップロード状態管理に限る
-- ark-ui `FileUpload` は `maxFiles > 1`（本プロジェクトは `maxFiles=100`）のとき内部 `acceptedFiles` に新規ファイルを累積追記し、`onFileAccept` は累積全体を渡す（`@zag-js/file-upload` の `setEventFiles` / bindable `onChange`）。完了後にローカル state だけクリアすると ark-ui 内部のリストは残り、次回アップロード時に完了済みファイルが再アップロードされる。本実装では ark-ui の `acceptedFiles` をクリアせず状況リスト・サムネイルの表示元として保持する。再アップロードは、フックが識別キーでアップロード済みファイルを追跡し、`onFileAccept` で渡る累積リストのうち未追跡の新規ファイルだけをアップロードすることで防ぐ（dedup 追跡方式）。`clearFiles` でクリアすると表示元のファイルも消えてサムネイル・状況リストが失われるため採らない
-- ファイル単位の状態は再試行時にも同一ファイルへ正しく対応づける必要がある。File の識別キー（例：`name` + `lastModified` + `size`）を決めて状態と紐づける
+- ドラッグ&ドロップは ark-ui `FileUpload` の `Dropzone` を土台にする。自前の DnD 実装は追加しない。ファイル一覧・サムネイル・状態表示は、自前の状態（`fileStates`）を表示元にする。サムネイルは保持した File から `URL.createObjectURL` で生成する。後述の `clearFiles` 方式により ark-ui 側にファイルが残らないため、`ItemGroup` / `Item` / `ItemPreviewImage` は使わない
+- ark-ui `FileUpload` は `maxFiles > 1`（本プロジェクトは `maxFiles=100`）のとき、内部 `acceptedFiles` に新規ファイルを累積追記する。`onFileAccept` には累積全体が渡る（`@zag-js/file-upload` の bindable `onChange`）。この累積をそのまま使うと次の3点が起きる。(1) 完了済みファイルが再アップロードされる。(2) 同一ファイルの再選択で `acceptedFiles` が重複し、表示キーが衝突してクラッシュする。(3) `maxFiles` 到達で新規受付が止まる。そこで本実装では、`onFileAccept` のたびに `clearFiles` で ark-ui の内部リストを空にする（`onFileAccept` 内での再帰的な state 更新を避けるため `queueMicrotask` 経由で呼ぶ）。ark-ui には選択・ドロップされたファイルを受け取って渡す役割だけを担わせ、ファイルは内部に保持させない。アップロード状態とサムネイルは自前の `fileStates` 側で保持するので、クリアしても表示は失われない。これにより上記3点を回避でき、ギャラリー削除後など同一ファイルの再アップロードも可能になる（クリア後に `onFileAccept` で渡るのは常に新規選択分のみ）。`clearFiles` を呼ぶ `api` を取得するため、Root は `useFileUpload` + `FileUpload.RootProvider` で構成する（単一 Root は維持）
+- ファイル単位の状態は、エントリごとに採番する一意な連番 ID で紐づける。再試行も同じ ID を対象にする。`name` + `lastModified` + `size` のような内容ベースのキーは使わない。同一ファイルの再アップロードを別エントリとして独立に扱うため、内容キーでは衝突するからである
 - ファイルごとの状態を独立して更新するため、`Promise.all` で一括完了を待つのではなく、各ファイルの Promise が自身の状態を更新する形にする（並列実行は維持）
 - フック・state・イベントハンドラを持つコンポーネント（新設ラッパー、`ImageUploadButton`、再試行ボタン）は `'use client'` とする。props を受け取って表示するだけの状態バッジ・サマリ等には付与しない
-- エリア全体ドロップは、`page.tsx` の 2 つの `FileUpload.Root` を 1 つに統合して実現する。ボタン・状況リスト・サマリ・ドロップゾーン・ギャラリー (`Images`) を単一の `FileUpload.Root` 配下に置き、ファイルの受理状態を 1 か所に集約する。`page.tsx` はサーバーコンポーネントなので、統合した `FileUpload.Root` を持つクライアントコンポーネントを新設し、`<Images />` は children として渡す（`Images` 自体は `FileUpload` のコンテキストに依存していないため children 化で破綻しない）。ドラッグ中のハイライトは ark-ui の `Dropzone` / data 属性で表現する
+- エリア全体ドロップは、`page.tsx` の 2 つの `FileUpload.Root` を 1 つに統合して実現する。ボタン・状況リスト・サマリ・ドロップゾーン・ギャラリー (`Images`) を単一の Root（`FileUpload.RootProvider`）配下に置き、ファイルの受理状態を 1 か所に集約する。`page.tsx` はサーバーコンポーネントなので、統合した Root を持つクライアントコンポーネントを新設する。`<Images />` はその children として渡す。`Images` 自体は `FileUpload` のコンテキストに依存しないため、children 化しても破綻しない。ドラッグ中のハイライトは ark-ui の `Dropzone` の data 属性で表現する
 - 状況リスト・サマリ・状態バッジは `features/album/components/` 配下に表示用コンポーネントとして切り出す（既存のコンポーネント分割粒度に合わせる）
 - 状態の型（`image-upload-status.ts`）はファイル単位の状態（`queued` / `uploading` / `success` / `error`）を表現できるよう拡張する。既存の集約 `status` を使う箇所がなくなる場合は削除する（デッドコードを残さない）
 - テストは Jest + Testing Library。コンポーネントには Storybook の story を用意する既存慣習に合わせる
 
 ## 決定事項
 
-ドロップアップロードの範囲：Drive / Dropbox 同様、コンテンツ領域（アップロードボタン＋ギャラリー）のどこにドロップしてもアップロードする方針とした（AC-5）。これに伴い `page.tsx` の 2 つの `FileUpload.Root` を 1 つに統合する。
+### ドロップアップロードの範囲
+
+Drive / Dropbox 同様、コンテンツ領域（アップロードボタン＋ギャラリー）のどこにドロップしてもアップロードする方針とした（AC-5）。これに伴い `page.tsx` の 2 つの `FileUpload.Root` を 1 つに統合する。
+
+### ark-ui の状態管理方式
+
+当初は dedup 追跡方式を採った。ark-ui の `acceptedFiles` を表示元として保持し、識別キーで追跡して未追跡分だけ送る方式となる。
+
+しかしこの方式には問題があった。同一ファイルの再選択時に `acceptedFiles` が重複し、キー衝突でクラッシュする。`maxFiles` の累積枯渇も残る。何より「アップロード → 削除 → 同じファイルを再アップロード」がブロックされる。
+
+代替として「ギャラリー削除と連動して追跡解除する」案も検討した。しかし二重ソースと削除連動の Context が残り、削除を伴わない再選択は依然ブロックされる。
+
+最終的に `clearFiles` 方式を採った。`onFileAccept` のたびに `clearFiles` で ark-ui の内部リストを空にし、ark-ui には受け取ったファイルを渡す役割だけを残す。状態とサムネイルは自前の `fileStates` に一元化する。これで再アップロード不可・クラッシュ・`maxFiles` 枯渇がすべて解消する。表示元の喪失も自前サムネイルで回避できる。dedup 追跡・内容キー・`ItemPreviewImage` は使わない。
 
 ## タスク一覧
 
