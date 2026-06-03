@@ -78,7 +78,6 @@ export const useImageUploader = (): UseImageUploaderResult => {
       const entries = files.map((file) => ({ id: String(nextIdRef.current++), file }));
       setFileStates((prev) => [...prev, ...entries.map(({ id, file }) => ({ id, file, status: 'queued' as const, error: null }))]);
 
-      // allSettled: 一件の失敗で残りのアップロードをキャンセルさせない。
       await Promise.allSettled(entries.map(({ id, file }) => runUpload(id, file)));
     },
     [runUpload],
