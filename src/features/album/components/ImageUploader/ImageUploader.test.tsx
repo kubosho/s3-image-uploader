@@ -20,8 +20,10 @@ const renderUploader = (children: ReactNode): ReturnType<typeof render> => {
 
 describe('ImageUploader', () => {
   it('renders a single upload control and the gallery children within one root', () => {
+    // Arrange & Act
     const { container } = renderUploader(<p>Gallery area</p>);
 
+    // Assert
     // ギャラリー(children)がアップロード領域内に内包されている（getByText は見つからなければ throw する）
     expect(screen.getByText('Gallery area')).toBeTruthy();
     // トリガーボタン経由のアップロードが残っている

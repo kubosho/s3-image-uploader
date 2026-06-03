@@ -16,7 +16,10 @@ const cases: Array<[ImageUploadStatus, string]> = [
 
 describe('UploadStatusBadge', () => {
   it.each(cases)('renders the label for status "%s"', (status, label) => {
+    // Arrange & Act
     render(<UploadStatusBadge status={status} />);
+
+    // Assert
     expect(screen.getByText(label)).toBeTruthy();
   });
 });

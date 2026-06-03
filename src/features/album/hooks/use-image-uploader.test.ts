@@ -30,25 +30,31 @@ beforeEach(() => {
 
 describe('useImageUploader', () => {
   it('uploads a file and transitions it to success', async () => {
+    // Arrange
     const { result } = renderHook(() => useImageUploader(), { wrapper: createWrapper() });
 
+    // Act
     await act(async () => {
       await result.current.uploadFiles([makeFile('a.png')]);
     });
 
+    // Assert
     expect(result.current.fileStates).toHaveLength(1);
     expect(result.current.fileStates[0].status).toBe('success');
     expect(result.current.fileStates[0].error).toBeNull();
   });
 
   it('keeps each file state independent when one fails', async () => {
+    // Arrange
     failingNames.add('a.png');
     const { result } = renderHook(() => useImageUploader(), { wrapper: createWrapper() });
 
+    // Act
     await act(async () => {
       await result.current.uploadFiles([makeFile('a.png'), makeFile('b.png')]);
     });
 
+    // Assert
     const stateOf = (name: string): FileUploadState | undefined =>
       result.current.fileStates.find((state) => state.file.name === name);
     expect(stateOf('a.png')?.status).toBe('error');
@@ -57,27 +63,30 @@ describe('useImageUploader', () => {
   });
 
   it('retries a failed file and transitions it back to success', async () => {
+    // Arrange: 失敗状態のファイルを用意する
     failingNames.add('a.png');
     const { result } = renderHook(() => useImageUploader(), { wrapper: createWrapper() });
-
     await act(async () => {
       await result.current.uploadFiles([makeFile('a.png')]);
     });
     expect(result.current.fileStates[0].status).toBe('error');
+    failingNames.clear(); // 次の試行は成功させる
 
-    // 次の試行は成功させる
-    failingNames.clear();
+    // Act
     await act(async () => {
       await result.current.retryFile(result.current.fileStates[0].file);
     });
 
+    // Assert
     expect(result.current.fileStates[0].status).toBe('success');
     expect(result.current.fileStates[0].error).toBeNull();
   });
 
   it('does not re-upload already tracked files (dedup)', async () => {
+    // Arrange
     const { result } = renderHook(() => useImageUploader(), { wrapper: createWrapper() });
 
+    // Act
     await act(async () => {
       await result.current.uploadFiles([makeFile('a.png')]);
     });
@@ -85,6 +94,7 @@ describe('useImageUploader', () => {
       await result.current.uploadFiles([makeFile('a.png'), makeFile('b.png')]);
     });
 
+    // Assert
     expect(result.current.fileStates).toHaveLength(2);
     // a.png はアップロード済みなので再アップロードされず、fetch は a + b の 2 回のみ。
     expect(global.fetch).toHaveBeenCalledTimes(2);
