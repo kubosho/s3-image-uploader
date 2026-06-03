@@ -71,7 +71,7 @@ status: todo
 ## 技術的制約
 
 - ドラッグ&ドロップ・サムネイル・ファイル一覧は ark-ui `FileUpload` のパーツ（`Dropzone`、`ItemGroup`、`Item`、`ItemPreviewImage`、`ItemName` など）を土台にし、自前の DnD / プレビュー実装は追加しない。自前実装はファイル単位のアップロード状態管理に限る
-- ark-ui `FileUpload` は `maxFiles > 1`（本プロジェクトは `maxFiles=100`）のとき内部 `acceptedFiles` に新規ファイルを累積追記し、`onFileAccept` は累積全体を渡す（`@zag-js/file-upload` の `setEventFiles` / bindable `onChange`）。完了後にローカル state だけクリアすると ark-ui 内部のリストは残り、次回アップロード時に完了済みファイルが再アップロードされる。状況リストの表示元と完了後のクリアはこの累積挙動を前提に設計する。完了/成功後は ark-ui 側の `api.clearFiles()`（または個別に `api.deleteFile(file)`）で内部リストも空にする。`api` へは `FileUpload.Context` または `useFileUpload` でアクセスする
+- ark-ui `FileUpload` は `maxFiles > 1`（本プロジェクトは `maxFiles=100`）のとき内部 `acceptedFiles` に新規ファイルを累積追記し、`onFileAccept` は累積全体を渡す（`@zag-js/file-upload` の `setEventFiles` / bindable `onChange`）。完了後にローカル state だけクリアすると ark-ui 内部のリストは残り、次回アップロード時に完了済みファイルが再アップロードされる。本実装では ark-ui の `acceptedFiles` をクリアせず状況リスト・サムネイルの表示元として保持する。再アップロードは、フックが識別キーでアップロード済みファイルを追跡し、`onFileAccept` で渡る累積リストのうち未追跡の新規ファイルだけをアップロードすることで防ぐ（dedup 追跡方式）。`clearFiles` でクリアすると表示元のファイルも消えてサムネイル・状況リストが失われるため採らない
 - ファイル単位の状態は再試行時にも同一ファイルへ正しく対応づける必要がある。File の識別キー（例：`name` + `lastModified` + `size`）を決めて状態と紐づける
 - ファイルごとの状態を独立して更新するため、`Promise.all` で一括完了を待つのではなく、各ファイルの Promise が自身の状態を更新する形にする（並列実行は維持）
 - フック・state・イベントハンドラを持つコンポーネント（新設ラッパー、`ImageUploadButton`、再試行ボタン）は `'use client'` とする。props を受け取って表示するだけの状態バッジ・サマリ等には付与しない
@@ -86,7 +86,7 @@ status: todo
 
 ## タスク一覧
 
-- [ ] AC-1：アップロード状態をファイル単位で保持する
+- [x] AC-1：アップロード状態をファイル単位で保持する
 - [ ] AC-2：ファイル単位の状況リストを表示する
 - [ ] AC-3：各ファイルにサムネイルを表示する
 - [ ] AC-4：全体の進捗サマリを表示する

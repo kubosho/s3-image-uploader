@@ -1,1 +1,1 @@
-export type ImageUploadStatus = 'idle' | 'uploading' | 'success' | 'error';
+export type ImageUploadStatus = 'queued' | 'uploading' | 'success' | 'error';

@@ -1,19 +1,26 @@
 'use client';
 
 import { useQueryClient } from '@tanstack/react-query';
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 import { ImageUploadStatus } from '../types/image-upload-status';
+import { fileKey } from '../utils/file-key';
 import { imagesQueryKey } from '../utils/images-query-key';
 import { upsertImagesSuccessResponseSchema } from '../utils/upsert-images-schema';
 
-type UseImageUploaderResult = {
-  uploadImage: (files: File[]) => Promise<void>;
+export type FileUploadState = {
+  file: File;
   status: ImageUploadStatus;
   error: string | null;
 };
 
-const uploadSingleImage = async (file: File): Promise<{ imagePath: string }> => {
+type UseImageUploaderResult = {
+  fileStates: FileUploadState[];
+  uploadFiles: (files: File[]) => Promise<void>;
+  retryFile: (file: File) => Promise<void>;
+};
+
+const uploadSingleImage = async (file: File): Promise<void> => {
   const params = new URLSearchParams();
   // Not using append() to prevent multiple parameters added.
   params.set('filename', file.name);
@@ -33,44 +40,58 @@ const uploadSingleImage = async (file: File): Promise<{ imagePath: string }> => 
   if (!result.success) {
     throw new Error('Invalid response type from server.');
   }
-
-  return result.data;
 };
 
 export const useImageUploader = (): UseImageUploaderResult => {
-  const [status, setStatus] = useState<ImageUploadStatus>('idle');
-  const [error, setError] = useState<string | null>(null);
+  const [fileStates, setFileStates] = useState<FileUploadState[]>([]);
+  // dedup: ark-ui は acceptedFiles に累積追記し onFileAccept で累積全体を渡すため、
+  // 追跡済みキーを保持し未追跡の新規ファイルだけアップロードして再アップロードを防ぐ。
+  const trackedKeysRef = useRef<Set<string>>(new Set());
   const queryClient = useQueryClient();
 
-  const resetState = useCallback(() => {
-    setStatus('idle');
-    setError(null);
+  const setStatus = useCallback((file: File, status: ImageUploadStatus, error: string | null = null) => {
+    const key = fileKey(file);
+    setFileStates((prev) => prev.map((state) => (fileKey(state.file) === key ? { ...state, status, error } : state)));
   }, []);
 
-  const uploadImage = useCallback(
+  const runUpload = useCallback(
+    async (file: File) => {
+      setStatus(file, 'uploading');
+
+      try {
+        await uploadSingleImage(file);
+        setStatus(file, 'success');
+        void queryClient.invalidateQueries({ queryKey: imagesQueryKey });
+      } catch (error) {
+        setStatus(file, 'error', error instanceof Error ? error.message : 'Unknown error');
+      }
+    },
+    [queryClient, setStatus],
+  );
+
+  const uploadFiles = useCallback(
     async (files: File[]) => {
-      if (files.length === 0) {
+      const newFiles = files.filter((file) => !trackedKeysRef.current.has(fileKey(file)));
+      if (newFiles.length === 0) {
         return;
       }
 
-      setStatus('uploading');
-      setError(null);
+      newFiles.forEach((file) => trackedKeysRef.current.add(fileKey(file)));
+      setFileStates((prev) => [...prev, ...newFiles.map((file) => ({ file, status: 'queued' as const, error: null }))]);
 
-      try {
-        await Promise.all(files.map(uploadSingleImage));
-        void queryClient.invalidateQueries({ queryKey: imagesQueryKey });
-        setStatus('success');
-      } catch (error) {
-        setStatus('error');
-        setError(error instanceof Error ? error.message : 'Unknown error');
-      } finally {
-        setTimeout(() => {
-          resetState();
-        }, 3_000);
-      }
+      // 各ファイルの Promise が自身の状態を更新する（並列実行を維持）。
+      await Promise.allSettled(newFiles.map(runUpload));
     },
-    [resetState],
+    [runUpload],
   );
 
-  return { uploadImage, status, error };
+  const retryFile = useCallback(
+    async (file: File) => {
+      setStatus(file, 'queued');
+      await runUpload(file);
+    },
+    [runUpload, setStatus],
+  );
+
+  return { fileStates, uploadFiles, retryFile };
 };
