@@ -1,10 +1,8 @@
-import { FileUpload } from '@ark-ui/react/file-upload';
 import type { Metadata } from 'next';
 
 import { SiteHeader } from '../components/SiteHeader';
-import { IMAGE_UPLOAD_LIMIT } from '../constants/image-upload-limit';
 import { Images } from '../features/album/components/Images';
-import { ImageUploadButton } from '../features/album/components/ImageUploadButton';
+import { ImageUploader } from '../features/album/components/ImageUploader';
 import { auth } from '../features/auth/auth';
 import { SignInButton } from '../features/auth/components/SignInButton';
 import { TanstackQueryClientProvider } from '../lib/TanstackQueryClientProvider';
@@ -60,15 +58,9 @@ export default async function IndexPage(props: Props): Promise<React.JSX.Element
         )}
         {session?.user != null && (
           <TanstackQueryClientProvider>
-            <div className={session?.user == null ? '' : 'flex flex-wrap gap-6 px-6 py-6'}>
-              <div className="shrink-0">
-                <ImageUploadButton />
-              </div>
-              <FileUpload.Root accept="image/*" maxFiles={IMAGE_UPLOAD_LIMIT} className="flex-1">
-                <FileUpload.HiddenInput />
-                <Images />
-              </FileUpload.Root>
-            </div>
+            <ImageUploader>
+              <Images />
+            </ImageUploader>
           </TanstackQueryClientProvider>
         )}
       </main>
