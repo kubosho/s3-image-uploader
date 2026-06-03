@@ -14,7 +14,7 @@ type Props = {
 };
 
 export function ImageUploader({ children }: Props): React.JSX.Element {
-  const { uploadFiles, fileStates } = useImageUploader();
+  const { uploadFiles, retryFile, fileStates } = useImageUploader();
 
   const handleFileAccept = (details: FileUpload.FileAcceptDetails): void => {
     void uploadFiles(details.files);
@@ -34,7 +34,12 @@ export function ImageUploader({ children }: Props): React.JSX.Element {
             Add file(s)
           </FileUpload.Trigger>
           <UploadProgressSummary fileStates={fileStates} />
-          <UploadStatusList fileStates={fileStates} />
+          <UploadStatusList
+            fileStates={fileStates}
+            onRetry={(file) => {
+              void retryFile(file);
+            }}
+          />
         </div>
         <div className="flex-1">{children}</div>
       </FileUpload.Dropzone>

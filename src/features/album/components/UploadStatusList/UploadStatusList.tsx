@@ -6,9 +6,10 @@ import { UploadStatusBadge } from '../UploadStatusBadge';
 
 type Props = {
   fileStates: FileUploadState[];
+  onRetry: (file: File) => void;
 };
 
-export function UploadStatusList({ fileStates }: Props): React.JSX.Element {
+export function UploadStatusList({ fileStates, onRetry }: Props): React.JSX.Element {
   const stateByKey = new Map(fileStates.map((state) => [fileKey(state.file), state]));
 
   return (
@@ -30,6 +31,15 @@ export function UploadStatusList({ fileStates }: Props): React.JSX.Element {
                 </FileUpload.ItemPreview>
                 <FileUpload.ItemName className="flex-1 truncate text-sm" />
                 <UploadStatusBadge status={state?.status ?? 'queued'} />
+                {state?.status === 'error' && (
+                  <button
+                    type="button"
+                    onClick={() => onRetry(file)}
+                    className="shrink-0 px-2 py-0.5 rounded-1 text-sm bg-blue-600 text-monotone-100"
+                  >
+                    再試行
+                  </button>
+                )}
               </FileUpload.Item>
             );
           })

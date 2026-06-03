@@ -4,6 +4,7 @@
 import { FileUpload } from '@ark-ui/react/file-upload';
 import { beforeAll, describe, expect, it, jest } from '@jest/globals';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import { type FileUploadState } from '../../hooks/use-image-uploader';
 import { UploadStatusList } from '.';
@@ -16,11 +17,16 @@ beforeAll(() => {
 
 const file = new File(['x'], 'photo.png', { type: 'image/png', lastModified: 1 });
 
-const renderList = (fileStates: FileUploadState[]): ReturnType<typeof render> =>
+const noop = (): void => {};
+
+const renderList = (
+  fileStates: FileUploadState[],
+  onRetry: (file: File) => void = noop,
+): ReturnType<typeof render> =>
   render(
     <FileUpload.Root accept="image/*" maxFiles={10} defaultAcceptedFiles={[file]}>
       <FileUpload.HiddenInput />
-      <UploadStatusList fileStates={fileStates} />
+      <UploadStatusList fileStates={fileStates} onRetry={onRetry} />
     </FileUpload.Root>,
   );
 
@@ -47,11 +53,27 @@ describe('UploadStatusList', () => {
     rerender(
       <FileUpload.Root accept="image/*" maxFiles={10} defaultAcceptedFiles={[file]}>
         <FileUpload.HiddenInput />
-        <UploadStatusList fileStates={[{ file, status: 'success', error: null }]} />
+        <UploadStatusList fileStates={[{ file, status: 'success', error: null }]} onRetry={noop} />
       </FileUpload.Root>,
     );
 
     expect(screen.getByText('完了')).toBeTruthy();
     expect(screen.queryByText('アップロード中')).toBeNull();
+  });
+
+  it('shows a retry button only for failed files and calls onRetry with the file', async () => {
+    const onRetry = jest.fn();
+    renderList([{ file, status: 'error', error: 'Upload failed with status 500.' }], onRetry);
+
+    await userEvent.click(screen.getByRole('button', { name: '再試行' }));
+
+    expect(onRetry).toHaveBeenCalledTimes(1);
+    expect(onRetry.mock.calls[0][0]).toBe(file);
+  });
+
+  it('does not show a retry button for non-failed files', () => {
+    renderList([{ file, status: 'success', error: null }]);
+
+    expect(screen.queryByRole('button', { name: '再試行' })).toBeNull();
   });
 });

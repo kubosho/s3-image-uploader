@@ -28,5 +28,6 @@ export const Mixed = meta.story({
       { file: sampleFiles[1], status: 'uploading', error: null },
       { file: sampleFiles[2], status: 'error', error: 'Upload failed with status 500.' },
     ],
+    onRetry: () => {},
   },
 });

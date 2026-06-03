@@ -56,6 +56,25 @@ describe('useImageUploader', () => {
     expect(stateOf('b.png')?.status).toBe('success');
   });
 
+  it('retries a failed file and transitions it back to success', async () => {
+    failingNames.add('a.png');
+    const { result } = renderHook(() => useImageUploader(), { wrapper: createWrapper() });
+
+    await act(async () => {
+      await result.current.uploadFiles([makeFile('a.png')]);
+    });
+    expect(result.current.fileStates[0].status).toBe('error');
+
+    // 次の試行は成功させる
+    failingNames.clear();
+    await act(async () => {
+      await result.current.retryFile(result.current.fileStates[0].file);
+    });
+
+    expect(result.current.fileStates[0].status).toBe('success');
+    expect(result.current.fileStates[0].error).toBeNull();
+  });
+
   it('does not re-upload already tracked files (dedup)', async () => {
     const { result } = renderHook(() => useImageUploader(), { wrapper: createWrapper() });
 
