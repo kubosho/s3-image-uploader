@@ -1,7 +1,7 @@
 'use client';
 
-import { FileUpload } from '@ark-ui/react/file-upload';
-import { type ReactNode } from 'react';
+import { FileUpload, useFileUpload } from '@ark-ui/react/file-upload';
+import { type ReactNode, useCallback, useRef } from 'react';
 
 import { IMAGE_UPLOAD_LIMIT } from '../../../../constants/image-upload-limit';
 import { useImageUploader } from '../../hooks/use-image-uploader';
@@ -15,13 +15,31 @@ type Props = {
 
 export function ImageUploader({ children }: Props): React.JSX.Element {
   const { uploadFiles, retryFile, fileStates } = useImageUploader();
+  const apiRef = useRef<ReturnType<typeof useFileUpload> | null>(null);
 
-  const handleFileAccept = (details: FileUpload.FileAcceptDetails): void => {
-    void uploadFiles(details.files);
-  };
+  const handleFileAccept = useCallback(
+    (details: FileUpload.FileAcceptDetails): void => {
+      if (details.files.length === 0) {
+        return;
+      }
+      void uploadFiles(details.files);
+      // ark-ui に蓄積させずピッカーとして使う。状態とサムネイルは fileStates 側で保持するので表示は失われない。
+      // これで同一ファイルの再アップロードが可能になり、maxFiles もバッチ単位の上限として働く。
+      // クリアは onFileAccept(=状態変更コールバック)内での再帰的な set を避けるためマイクロタスクへ逃がす。
+      queueMicrotask(() => apiRef.current?.clearFiles());
+    },
+    [uploadFiles],
+  );
+
+  const fileUpload = useFileUpload({
+    accept: 'image/*',
+    maxFiles: IMAGE_UPLOAD_LIMIT,
+    onFileAccept: handleFileAccept,
+  });
+  apiRef.current = fileUpload;
 
   return (
-    <FileUpload.Root accept="image/*" maxFiles={IMAGE_UPLOAD_LIMIT} onFileAccept={handleFileAccept} className="min-h-full">
+    <FileUpload.RootProvider value={fileUpload} className="min-h-full">
       <FileUpload.HiddenInput />
       {/* disableClick: ドロップゾーン内にギャラリーを内包するため、クリックでのファイルダイアログ起動を無効化する。投入はトリガーボタンとドロップで行う。 */}
       <FileUpload.Dropzone
@@ -31,15 +49,10 @@ export function ImageUploader({ children }: Props): React.JSX.Element {
         <div className="shrink-0 flex flex-col gap-4 w-64">
           <ImageUploadButton />
           <UploadProgressSummary fileStates={fileStates} />
-          <UploadStatusList
-            fileStates={fileStates}
-            onRetry={(file) => {
-              void retryFile(file);
-            }}
-          />
+          <UploadStatusList fileStates={fileStates} onRetry={(id, file) => void retryFile(id, file)} />
         </div>
         <div className="flex-1">{children}</div>
       </FileUpload.Dropzone>
-    </FileUpload.Root>
+    </FileUpload.RootProvider>
   );
 }

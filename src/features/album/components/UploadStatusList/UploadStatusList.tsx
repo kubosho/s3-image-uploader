@@ -1,52 +1,48 @@
-import { FileUpload } from '@ark-ui/react/file-upload';
+import { useEffect, useState } from 'react';
 
 import { type FileUploadState } from '../../hooks/use-image-uploader';
-import { fileKey } from '../../utils/file-key';
 import { UploadStatusBadge } from '../UploadStatusBadge';
 
 type Props = {
   fileStates: FileUploadState[];
-  onRetry: (file: File) => void;
+  onRetry: (id: string, file: File) => void;
 };
 
+function Thumbnail({ file }: { file: File }): React.JSX.Element {
+  // object URL は effect 内で生成し、その cleanup でのみ revoke する。
+  // StrictMode の effect 二重実行でも、最後に生成した URL が state に残り img が参照できる。
+  const [url, setUrl] = useState<string | null>(null);
+  useEffect(() => {
+    const objectUrl = URL.createObjectURL(file);
+    setUrl(objectUrl);
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [file]);
+
+  return <img src={url ?? undefined} alt="" className="h-10 w-10 shrink-0 rounded-1 object-cover" />;
+}
+
 export function UploadStatusList({ fileStates, onRetry }: Props): React.JSX.Element {
-  // File 実体とサムネイルは ark-ui の acceptedFiles から、アップロード状態は fileStates から取る。
-  // ark-ui は状態を持たないため、両者を fileKey で突き合わせる。
-  const stateByKey = new Map(fileStates.map((state) => [fileKey(state.file), state]));
-
   return (
-    <FileUpload.ItemGroup className="flex flex-col gap-2">
-      <FileUpload.Context>
-        {(fileUpload) =>
-          fileUpload.acceptedFiles.map((file) => {
-            const key = fileKey(file);
-            const state = stateByKey.get(key);
-
-            return (
-              <FileUpload.Item
-                key={key}
-                file={file}
-                className="flex items-center gap-2 px-3 py-2 rounded-2 border border-neutral-border"
-              >
-                <FileUpload.ItemPreview type="image/*" className="shrink-0">
-                  <FileUpload.ItemPreviewImage className="h-10 w-10 rounded-1 object-cover" />
-                </FileUpload.ItemPreview>
-                <FileUpload.ItemName className="flex-1 truncate text-sm" />
-                <UploadStatusBadge status={state?.status ?? 'queued'} />
-                {state?.status === 'error' && (
-                  <button
-                    type="button"
-                    onClick={() => onRetry(file)}
-                    className="shrink-0 px-2 py-0.5 rounded-1 text-sm bg-blue-600 text-monotone-100"
-                  >
-                    再試行
-                  </button>
-                )}
-              </FileUpload.Item>
-            );
-          })
-        }
-      </FileUpload.Context>
-    </FileUpload.ItemGroup>
+    <ul className="flex flex-col gap-2">
+      {fileStates.map((state) => (
+        <li
+          key={state.id}
+          className="flex items-center gap-2 px-3 py-2 rounded-2 border border-neutral-border"
+        >
+          <Thumbnail file={state.file} />
+          <span className="flex-1 truncate text-sm">{state.file.name}</span>
+          <UploadStatusBadge status={state.status} />
+          {state.status === 'error' && (
+            <button
+              type="button"
+              onClick={() => onRetry(state.id, state.file)}
+              className="shrink-0 px-2 py-0.5 rounded-1 text-sm bg-blue-600 text-monotone-100"
+            >
+              再試行
+            </button>
+          )}
+        </li>
+      ))}
+    </ul>
   );
 }

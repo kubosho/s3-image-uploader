@@ -1,5 +1,3 @@
-import { FileUpload } from '@ark-ui/react/file-upload';
-
 import preview from '../../../../../.storybook/preview';
 import { UploadStatusList } from '.';
 
@@ -11,22 +9,14 @@ const sampleFiles = [
 
 const meta = preview.meta({
   component: UploadStatusList,
-  decorators: [
-    (Story) => (
-      <FileUpload.Root accept="image/*" maxFiles={10} defaultAcceptedFiles={sampleFiles}>
-        <FileUpload.HiddenInput />
-        <Story />
-      </FileUpload.Root>
-    ),
-  ],
 });
 
 export const Mixed = meta.story({
   args: {
     fileStates: [
-      { file: sampleFiles[0], status: 'success', error: null },
-      { file: sampleFiles[1], status: 'uploading', error: null },
-      { file: sampleFiles[2], status: 'error', error: 'Upload failed with status 500.' },
+      { id: '1', file: sampleFiles[0], status: 'success', error: null },
+      { id: '2', file: sampleFiles[1], status: 'uploading', error: null },
+      { id: '3', file: sampleFiles[2], status: 'error', error: 'Upload failed with status 500.' },
     ],
     onRetry: () => {},
   },

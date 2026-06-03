@@ -14,9 +14,9 @@ const meta = preview.meta({
 export const InProgress = meta.story({
   args: {
     fileStates: [
-      { file: files[0], status: 'success', error: null },
-      { file: files[1], status: 'uploading', error: null },
-      { file: files[2], status: 'queued', error: null },
+      { id: '1', file: files[0], status: 'success', error: null },
+      { id: '2', file: files[1], status: 'uploading', error: null },
+      { id: '3', file: files[2], status: 'queued', error: null },
     ],
   },
 });
@@ -24,9 +24,9 @@ export const InProgress = meta.story({
 export const WithFailure = meta.story({
   args: {
     fileStates: [
-      { file: files[0], status: 'success', error: null },
-      { file: files[1], status: 'success', error: null },
-      { file: files[2], status: 'error', error: 'Upload failed with status 500.' },
+      { id: '1', file: files[0], status: 'success', error: null },
+      { id: '2', file: files[1], status: 'success', error: null },
+      { id: '3', file: files[2], status: 'error', error: 'Upload failed with status 500.' },
     ],
   },
 });

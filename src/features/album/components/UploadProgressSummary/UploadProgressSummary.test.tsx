@@ -11,7 +11,7 @@ const makeFile = (name: string, lastModified: number): File =>
   new File(['x'], name, { type: 'image/png', lastModified });
 
 const states = (statuses: FileUploadState['status'][]): FileUploadState[] =>
-  statuses.map((status, index) => ({ file: makeFile(`f${index}.png`, index), status, error: null }));
+  statuses.map((status, index) => ({ id: String(index), file: makeFile(`f${index}.png`, index), status, error: null }));
 
 describe('UploadProgressSummary', () => {
   it('renders nothing when there are no files', () => {

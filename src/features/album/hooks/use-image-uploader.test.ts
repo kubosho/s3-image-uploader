@@ -74,7 +74,8 @@ describe('useImageUploader', () => {
 
     // Act
     await act(async () => {
-      await result.current.retryFile(result.current.fileStates[0].file);
+      const { id, file } = result.current.fileStates[0];
+      await result.current.retryFile(id, file);
     });
 
     // Assert
@@ -82,21 +83,22 @@ describe('useImageUploader', () => {
     expect(result.current.fileStates[0].error).toBeNull();
   });
 
-  it('does not re-upload already tracked files (dedup)', async () => {
+  it('uploads the same file again as a separate entry when re-selected', async () => {
     // Arrange
     const { result } = renderHook(() => useImageUploader(), { wrapper: createWrapper() });
 
-    // Act
+    // Act: 同じファイルを 2 回に分けてアップロードする（削除後の再アップロードに相当）
     await act(async () => {
       await result.current.uploadFiles([makeFile('a.png')]);
     });
     await act(async () => {
-      await result.current.uploadFiles([makeFile('a.png'), makeFile('b.png')]);
+      await result.current.uploadFiles([makeFile('a.png')]);
     });
 
-    // Assert
+    // Assert: 再アップロードは別エントリとして 2 件記録され、実際に 2 回送信される
     expect(result.current.fileStates).toHaveLength(2);
-    // a.png はアップロード済みなので再アップロードされず、fetch は a + b の 2 回のみ。
+    expect(new Set(result.current.fileStates.map((state) => state.id)).size).toBe(2);
     expect(global.fetch).toHaveBeenCalledTimes(2);
+    expect(result.current.fileStates.every((state) => state.status === 'success')).toBe(true);
   });
 });
