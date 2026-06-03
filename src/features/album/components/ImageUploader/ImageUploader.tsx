@@ -25,8 +25,7 @@ export function ImageUploader({ children }: Props): React.JSX.Element {
       void uploadFiles(details.files);
       // ark-ui には受け取ったファイルを渡させるだけにし、内部には溜め込ませない。状態とサムネイルは fileStates 側で保持するので表示は失われない。
       // これで同一ファイルの再アップロードが可能になり、maxFiles もバッチ単位の上限として働く。
-      // クリアは onFileAccept(=状態変更コールバック)内での再帰的な set を避けるためマイクロタスクへ逃がす。
-      queueMicrotask(() => apiRef.current?.clearFiles());
+      apiRef.current?.clearFiles();
     },
     [uploadFiles],
   );
