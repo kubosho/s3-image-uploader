@@ -25,9 +25,9 @@ describe('ImageUploader', () => {
 
     // Assert
     // ギャラリー(children)がアップロード領域内に内包されている（getByText は見つからなければ throw する）
-    expect(screen.getByText('Gallery area')).toBeTruthy();
+    screen.getByText('Gallery area');
     // トリガーボタン経由のアップロードが残っている
-    expect(screen.getByRole('button', { name: /add file/i })).toBeTruthy();
+    screen.getByRole('button', { name: /add file/i });
     // 受理対象は画像のみ、隠し input は 1 つ（Root が統合されている）
     const inputs = container.querySelectorAll('input[type="file"]');
     expect(inputs).toHaveLength(1);

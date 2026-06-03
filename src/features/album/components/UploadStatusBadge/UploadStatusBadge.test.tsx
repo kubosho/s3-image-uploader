@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { describe, expect, it } from '@jest/globals';
+import { describe, it } from '@jest/globals';
 import { render, screen } from '@testing-library/react';
 
 import { type ImageUploadStatus } from '../../types/image-upload-status';
@@ -19,7 +19,7 @@ describe('UploadStatusBadge', () => {
     // Arrange & Act
     render(<UploadStatusBadge status={status} />);
 
-    // Assert
-    expect(screen.getByText(label)).toBeTruthy();
+    // Assert: 見つからなければ getByText が throw する
+    screen.getByText(label);
   });
 });

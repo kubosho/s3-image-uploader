@@ -35,9 +35,9 @@ describe('UploadStatusList', () => {
     // Arrange & Act
     renderList([{ file, status: 'uploading', error: null }]);
 
-    // Assert
-    expect(screen.getByText('photo.png')).toBeTruthy();
-    expect(screen.getByText('アップロード中')).toBeTruthy();
+    // Assert: 見つからなければ getByText が throw する
+    screen.getByText('photo.png');
+    screen.getByText('アップロード中');
   });
 
   it('renders a thumbnail image for the file', () => {
@@ -53,7 +53,7 @@ describe('UploadStatusList', () => {
   it('reflects the status transition in the badge label', () => {
     // Arrange
     const { rerender } = renderList([{ file, status: 'uploading', error: null }]);
-    expect(screen.getByText('アップロード中')).toBeTruthy();
+    screen.getByText('アップロード中');
 
     // Act: 状態を success に更新して再レンダリングする
     rerender(
@@ -64,7 +64,7 @@ describe('UploadStatusList', () => {
     );
 
     // Assert
-    expect(screen.getByText('完了')).toBeTruthy();
+    screen.getByText('完了');
     expect(screen.queryByText('アップロード中')).toBeNull();
   });
 
