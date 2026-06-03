@@ -79,7 +79,7 @@ export const useImageUploader = (): UseImageUploaderResult => {
       newFiles.forEach((file) => trackedKeysRef.current.add(fileKey(file)));
       setFileStates((prev) => [...prev, ...newFiles.map((file) => ({ file, status: 'queued' as const, error: null }))]);
 
-      // 各ファイルの Promise が自身の状態を更新する（並列実行を維持）。
+      // allSettled: 一件の失敗で残りのアップロードをキャンセルさせない。
       await Promise.allSettled(newFiles.map(runUpload));
     },
     [runUpload],

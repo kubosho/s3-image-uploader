@@ -10,6 +10,8 @@ type Props = {
 };
 
 export function UploadStatusList({ fileStates, onRetry }: Props): React.JSX.Element {
+  // File 実体とサムネイルは ark-ui の acceptedFiles から、アップロード状態は fileStates から取る。
+  // ark-ui は状態を持たないため、両者を fileKey で突き合わせる。
   const stateByKey = new Map(fileStates.map((state) => [fileKey(state.file), state]));
 
   return (
