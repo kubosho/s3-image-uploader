@@ -2,11 +2,17 @@
  * @jest-environment jsdom
  */
 import { FileUpload } from '@ark-ui/react/file-upload';
-import { describe, expect, it } from '@jest/globals';
+import { beforeAll, describe, expect, it, jest } from '@jest/globals';
 import { render, screen } from '@testing-library/react';
 
 import { type FileUploadState } from '../../hooks/use-image-uploader';
 import { UploadStatusList } from '.';
+
+// jsdom は URL.createObjectURL を実装しないため、サムネイル(ItemPreviewImage)用にモックする。
+beforeAll(() => {
+  URL.createObjectURL = jest.fn(() => 'blob:mock') as typeof URL.createObjectURL;
+  URL.revokeObjectURL = jest.fn() as typeof URL.revokeObjectURL;
+});
 
 const file = new File(['x'], 'photo.png', { type: 'image/png', lastModified: 1 });
 
@@ -24,6 +30,14 @@ describe('UploadStatusList', () => {
 
     expect(screen.getByText('photo.png')).toBeTruthy();
     expect(screen.getByText('アップロード中')).toBeTruthy();
+  });
+
+  it('renders a thumbnail image for the file', () => {
+    const { container } = renderList([{ file, status: 'uploading', error: null }]);
+
+    const image = container.querySelector('img');
+    expect(image).not.toBeNull();
+    expect(image?.getAttribute('src')).toBe('blob:mock');
   });
 
   it('reflects the status transition in the badge label', () => {
