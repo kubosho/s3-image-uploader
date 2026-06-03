@@ -6,6 +6,7 @@ import { type ReactNode } from 'react';
 
 import { IMAGE_UPLOAD_LIMIT } from '../../../../constants/image-upload-limit';
 import { useImageUploader } from '../../hooks/use-image-uploader';
+import { UploadProgressSummary } from '../UploadProgressSummary';
 import { UploadStatusList } from '../UploadStatusList';
 
 type Props = {
@@ -32,6 +33,7 @@ export function ImageUploader({ children }: Props): React.JSX.Element {
             <Image src="/images/icons/plus.svg" alt="" width={12} height={12} />
             Add file(s)
           </FileUpload.Trigger>
+          <UploadProgressSummary fileStates={fileStates} />
           <UploadStatusList fileStates={fileStates} />
         </div>
         <div className="flex-1">{children}</div>
