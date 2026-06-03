@@ -9,6 +9,9 @@
 .next
 out
 
+# Next.js が自動生成する型定義。next typegen で再生成できるため追跡しない
+next-env.d.ts
+
 # Vercel
 .vercel/
 
