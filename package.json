@@ -35,7 +35,7 @@
   "devDependencies": {
     "@eslint/js": "9.39.4",
     "@jest/globals": "30.3.0",
-    "@kubosho/configs": "6.5.19",
+    "@kubosho/configs": "6.5.36",
     "@o2project/design-system": "1.5.11",
     "@secretlint/secretlint-rule-preset-recommend": "11.7.1",
     "@storybook/addon-actions": "9.0.8",
