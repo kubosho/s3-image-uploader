@@ -1,10 +1,11 @@
+import type { Config } from '@jest/types';
 import nextJest from 'next/jest.js';
 
 const createJestConfig = nextJest({
   dir: './',
 });
 
-const customJestConfig = {
+const customJestConfig: Config.InitialProjectOptions = {
   clearMocks: true,
   collectCoverageFrom: [
     'src/**/*.{js,jsx,ts,tsx}',
